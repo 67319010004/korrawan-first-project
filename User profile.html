@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>โปรไฟล์ผู้ใช้</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@500;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .profile-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+    
+    .profile-avatar {
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover {
+      transform: scale(1.05);
+    }
+    
+    .profile-avatar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0);
+      transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover::before {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-avatar .camera-icon {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover .camera-icon {
+      transform: scale(1.1);
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .info-card {
+      transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      border-radius: 24px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 85%;
+      overflow-y: auto;
+      animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 24px 72px rgba(0, 0, 0, 0.4);
+    }
+    
+    .avatar-option {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+    
+    .avatar-option:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    
+    .avatar-option.selected {
+      transform: scale(1.05);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(100px) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+      to { transform: translateX(400px); opacity: 0; }
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .badge:hover {
+      transform: scale(1.05);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full h-full">
+  <div class="profile-container" id="main-container"><!-- Cover Photo -->
+   <div class="w-full h-48 relative" id="cover-photo">
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);"></div>
+   </div><!-- Profile Content -->
+   <div class="w-full px-6 pb-8">
+    <div class="max-w-4xl mx-auto"><!-- Profile Header -->
+     <div class="relative -mt-20 mb-6">
+      <div class="flex flex-col md:flex-row items-center md:items-end gap-6"><!-- Avatar -->
+       <div class="profile-avatar" onclick="openAvatarSelector()">
+        <div class="w-40 h-40 rounded-full flex items-center justify-center text-7xl font-bold border-4" id="user-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 8px 32px rgba(0,0,0,0.3);">
+         👤
+        </div>
+        <div class="camera-icon" id="camera-btn">
+         📷
+        </div>
+       </div><!-- User Info -->
+       <div class="flex-1 text-center md:text-left mb-4">
+        <h1 class="text-4xl font-bold mb-2" id="display-name" style="font-family: 'Prompt', sans-serif;">นายสมชาย ใจดี</h1>
+        <p class="text-lg mb-3" id="display-bio" style="opacity: 0.8;">นักพัฒนาเว็บไซต์ | ชอบเขียนโค้ดและดีไซน์</p>
+        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+         <div class="badge" id="badge-verified"><span>✓</span> <span>บัญชียืนยันแล้ว</span>
+         </div>
+         <div class="badge" id="badge-member"><span>⭐</span> <span>สมาชิก Premium</span>
+         </div>
+        </div>
+       </div><!-- Action Buttons -->
+       <div class="flex gap-3"><button class="action-btn px-6 py-3 rounded-xl font-bold shadow-lg" id="edit-btn" onclick="openEditModal()"> <span id="edit-btn-text">✏️ แก้ไขโปรไฟล์</span> </button> <button class="action-btn px-6 py-3 rounded-xl font-bold shadow-lg" id="share-btn" onclick="shareProfile()"> <span id="share-btn-text">🔗 แชร์โปรไฟล์</span> </button>
+       </div>
+      </div>
+     </div><!-- Stats -->
+     <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="stat-card p-6 rounded-2xl shadow-lg text-center" id="stat-posts" onclick="showToast('📝 ดูโพสต์ทั้งหมด')">
+       <div class="text-3xl font-bold mb-1" id="posts-number" style="font-family: 'Prompt', sans-serif;">
+        128
+       </div>
+       <div class="text-sm" style="opacity: 0.7;">
+        โพสต์
+       </div>
+      </div>
+      <div class="stat-card p-6 rounded-2xl shadow-lg text-center" id="stat-followers" onclick="showToast('👥 ดูผู้ติดตาม')">
+       <div class="text-3xl font-bold mb-1" id="followers-number" style="font-family: 'Prompt', sans-serif;">
+        1.2K
+       </div>
+       <div class="text-sm" style="opacity: 0.7;">
+        ผู้ติดตาม
+       </div>
+      </div>
+      <div class="stat-card p-6 rounded-2xl shadow-lg text-center" id="stat-following" onclick="showToast('👤 ดูกำลังติดตาม')">
+       <div class="text-3xl font-bold mb-1" id="following-number" style="font-family: 'Prompt', sans-serif;">
+        342
+       </div>
+       <div class="text-sm" style="opacity: 0.7;">
+        กำลังติดตาม
+       </div>
+      </div>
+     </div><!-- Info Cards -->
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><!-- Contact Info -->
+      <div class="info-card p-6 rounded-2xl shadow-lg" id="contact-card">
+       <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">📞 ข้อมูลติดต่อ</h3>
+       <div class="space-y-3">
+        <div class="flex items-center gap-3 p-3 rounded-xl" id="email-box"><span class="text-2xl">📧</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70">
+           อีเมล
+          </div>
+          <div class="font-semibold" id="display-email">
+           somchai@example.com
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl" id="phone-box"><span class="text-2xl">📱</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70">
+           เบอร์โทร
+          </div>
+          <div class="font-semibold" id="display-phone">
+           081-234-5678
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl" id="location-box"><span class="text-2xl">📍</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70">
+           ที่อยู่
+          </div>
+          <div class="font-semibold">
+           กรุงเทพมหานคร, ประเทศไทย
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Activity -->
+      <div class="info-card p-6 rounded-2xl shadow-lg" id="activity-card">
+       <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">📊 กิจกรรมล่าสุด</h3>
+       <div class="space-y-3">
+        <div class="flex items-center gap-3 p-3 rounded-xl" id="activity-1"><span class="text-2xl">💬</span>
+         <div class="flex-1">
+          <div class="font-semibold">
+           แสดงความคิดเห็น
+          </div>
+          <div class="text-sm opacity-70">
+           2 ชั่วโมงที่แล้ว
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl" id="activity-2"><span class="text-2xl">❤️</span>
+         <div class="flex-1">
+          <div class="font-semibold">
+           ถูกใจโพสต์
+          </div>
+          <div class="text-sm opacity-70">
+           5 ชั่วโมงที่แล้ว
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-3 p-3 rounded-xl" id="activity-3"><span class="text-2xl">📝</span>
+         <div class="flex-1">
+          <div class="font-semibold">
+           โพสต์เนื้อหาใหม่
+          </div>
+          <div class="text-sm opacity-70">
+           1 วันที่แล้ว
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Skills -->
+      <div class="info-card p-6 rounded-2xl shadow-lg" id="skills-card">
+       <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">💪 ทักษะ</h3>
+       <div class="flex flex-wrap gap-2"><span class="badge" id="skill-1">🎨 UI/UX Design</span> <span class="badge" id="skill-2">💻 Web Development</span> <span class="badge" id="skill-3">📱 Mobile App</span> <span class="badge" id="skill-4">🚀 Project Management</span> <span class="badge" id="skill-5">📊 Data Analysis</span>
+       </div>
+      </div><!-- Interests -->
+      <div class="info-card p-6 rounded-2xl shadow-lg" id="interests-card">
+       <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">❤️ ความสนใจ</h3>
+       <div class="flex flex-wrap gap-2"><span class="badge" id="interest-1">⚽ กีฬา</span> <span class="badge" id="interest-2">🎵 ดนตรี</span> <span class="badge" id="interest-3">📚 อ่านหนังสือ</span> <span class="badge" id="interest-4">✈️ ท่องเที่ยว</span> <span class="badge" id="interest-5">🍳 ทำอาหาร</span> <span class="badge" id="interest-6">📷 ถ่ายภาพ</span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatar-modal">
+   <div class="modal-content p-8" id="avatar-modal-content">
+    <div class="flex items-center justify-between mb-6">
+     <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">📷 เลือกรูปโปรไฟล์</h3><button class="text-4xl opacity-70 hover:opacity-100 transition-all leading-none" onclick="closeAvatarModal()">×</button>
+    </div>
+    <p class="text-base mb-6 opacity-70">เลือกรูปโปรไฟล์ที่คุณชอบ</p>
+    <div class="grid grid-cols-4 gap-4 mb-6">
+     <div class="avatar-option selected" data-emoji="👤" onclick="selectAvatar('👤', event)" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+      👤
+     </div>
+     <div class="avatar-option" data-emoji="👨" onclick="selectAvatar('👨', event)" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+      👨
+     </div>
+     <div class="avatar-option" data-emoji="👩" onclick="selectAvatar('👩', event)" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+      👩
+     </div>
+     <div class="avatar-option" data-emoji="🧑" onclick="selectAvatar('🧑', event)" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+      🧑
+     </div>
+     <div class="avatar-option" data-emoji="👨‍💼" onclick="selectAvatar('👨‍💼', event)" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+      👨‍💼
+     </div>
+     <div class="avatar-option" data-emoji="👩‍💼" onclick="selectAvatar('👩‍💼', event)" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+      👩‍💼
+     </div>
+     <div class="avatar-option" data-emoji="🧑‍💻" onclick="selectAvatar('🧑‍💻', event)" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+      🧑‍💻
+     </div>
+     <div class="avatar-option" data-emoji="👨‍🎓" onclick="selectAvatar('👨‍🎓', event)" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+      👨‍🎓
+     </div>
+     <div class="avatar-option" data-emoji="👩‍🎨" onclick="selectAvatar('👩‍🎨', event)" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+      👩‍🎨
+     </div>
+     <div class="avatar-option" data-emoji="🧑‍🚀" onclick="selectAvatar('🧑‍🚀', event)" style="background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);">
+      🧑‍🚀
+     </div>
+     <div class="avatar-option" data-emoji="😊" onclick="selectAvatar('😊', event)" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);">
+      😊
+     </div>
+     <div class="avatar-option" data-emoji="😎" onclick="selectAvatar('😎', event)" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+      😎
+     </div>
+     <div class="avatar-option" data-emoji="🤓" onclick="selectAvatar('🤓', event)" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+      🤓
+     </div>
+     <div class="avatar-option" data-emoji="🥳" onclick="selectAvatar('🥳', event)" style="background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);">
+      🥳
+     </div>
+     <div class="avatar-option" data-emoji="🌟" onclick="selectAvatar('🌟', event)" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+      🌟
+     </div>
+     <div class="avatar-option" data-emoji="💎" onclick="selectAvatar('💎', event)" style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);">
+      💎
+     </div>
+    </div><button class="action-btn w-full py-3 rounded-xl font-bold shadow-lg" id="confirm-avatar-btn" onclick="confirmAvatar()"> ✅ ยืนยันการเลือก </button>
+   </div>
+  </div><!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="edit-modal">
+   <div class="modal-content p-8" id="edit-modal-content">
+    <div class="flex items-center justify-between mb-6">
+     <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">✏️ แก้ไขโปรไฟล์</h3><button class="text-4xl opacity-70 hover:opacity-100 transition-all leading-none" onclick="closeEditModal()">×</button>
+    </div>
+    <div class="space-y-4 mb-6">
+     <div><label for="edit-name" class="block text-sm font-semibold mb-2">ชื่อ-นามสกุล</label> <input type="text" id="edit-name" class="w-full px-4 py-3 rounded-xl border-2 focus:outline-none transition-all" placeholder="กรอกชื่อ" value="นายสมชาย ใจดี">
+     </div>
+     <div><label for="edit-bio" class="block text-sm font-semibold mb-2">คำอธิบายตัวเอง</label> <textarea id="edit-bio" rows="3" class="w-full px-4 py-3 rounded-xl border-2 focus:outline-none transition-all" placeholder="กรอกคำอธิบาย">นักพัฒนาเว็บไซต์ | ชอบเขียนโค้ดและดีไซน์</textarea>
+     </div>
+     <div><label for="edit-email" class="block text-sm font-semibold mb-2">อีเมล</label> <input type="email" id="edit-email" class="w-full px-4 py-3 rounded-xl border-2 focus:outline-none transition-all" placeholder="กรอกอีเมล" value="somchai@example.com">
+     </div>
+     <div><label for="edit-phone" class="block text-sm font-semibold mb-2">เบอร์โทรศัพท์</label> <input type="tel" id="edit-phone" class="w-full px-4 py-3 rounded-xl border-2 focus:outline-none transition-all" placeholder="กรอกเบอร์โทร" value="081-234-5678">
+     </div>
+    </div><button class="action-btn w-full py-3 rounded-xl font-bold shadow-lg" id="save-profile-btn" onclick="saveProfile()"> 💾 บันทึกการเปลี่ยนแปลง </button>
+   </div>
+  </div><!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>
+  <script>
+    const defaultConfig = {
+      background_color: "#f5f7fa",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#667eea",
+      secondary_action_color: "#764ba2",
+      font_family: "Sarabun",
+      font_size: 16,
+      user_name: "นายสมชาย ใจดี",
+      user_email: "somchai@example.com",
+      user_phone: "081-234-5678",
+      user_bio: "นักพัฒนาเว็บไซต์ | ชอบเขียนโค้ดและดีไซน์",
+      posts_count: "128",
+      followers_count: "1.2K",
+      following_count: "342",
+      edit_button: "แก้ไขโปรไฟล์",
+      share_button: "แชร์โปรไฟล์"
+    };
+
+    let currentAvatar = '👤';
+    let selectedAvatarTemp = '👤';
+
+    function openAvatarSelector() {
+      document.getElementById('avatar-modal').style.display = 'flex';
+      selectedAvatarTemp = currentAvatar;
+      
+      document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+        if (option.dataset.emoji === currentAvatar) {
+          option.classList.add('selected');
+        }
+      });
+    }
+
+    function closeAvatarModal() {
+      document.getElementById('avatar-modal').style.display = 'none';
+    }
+
+    function selectAvatar(emoji, event) {
+      selectedAvatarTemp = emoji;
+      
+      document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      event.currentTarget.classList.add('selected');
+    }
+
+    function confirmAvatar() {
+      currentAvatar = selectedAvatarTemp;
+      document.getElementById('user-avatar').textContent = currentAvatar;
+      closeAvatarModal();
+      showToast('✅ เปลี่ยนรูปโปรไฟล์สำเร็จ!');
+    }
+
+    function openEditModal() {
+      document.getElementById('edit-modal').style.display = 'flex';
+      
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      document.getElementById('edit-name').value = config.user_name || defaultConfig.user_name;
+      document.getElementById('edit-bio').value = config.user_bio || defaultConfig.user_bio;
+      document.getElementById('edit-email').value = config.user_email || defaultConfig.user_email;
+      document.getElementById('edit-phone').value = config.user_phone || defaultConfig.user_phone;
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    function saveProfile() {
+      const name = document.getElementById('edit-name').value;
+      const bio = document.getElementById('edit-bio').value;
+      const email = document.getElementById('edit-email').value;
+      const phone = document.getElementById('edit-phone').value;
+      
+      document.getElementById('display-name').textContent = name;
+      document.getElementById('display-bio').textContent = bio;
+      document.getElementById('display-email').textContent = email;
+      document.getElementById('display-phone').textContent = phone;
+      
+      if (window.elementSdk) {
+        window.elementSdk.setConfig({
+          user_name: name,
+          user_bio: bio,
+          user_email: email,
+          user_phone: phone
+        });
+      }
+      
+      closeEditModal();
+      showToast('💾 บันทึกข้อมูลโปรไฟล์สำเร็จ!');
+    }
+
+    function shareProfile() {
+      showToast('🔗 คัดลอกลิงก์โปรไฟล์แล้ว!');
+    }
+
+    function showToast(message) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        background-color: ${primaryColor};
+        color: white;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        margin-bottom: 12px;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        max-width: 400px;
+        font-size: 15px;
+      `;
+      
+      document.getElementById('toast-container').appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.4s ease-in';
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    async function applyStyles() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      
+      document.getElementById('main-container').style.backgroundColor = bgColor;
+      
+      document.getElementById('display-name').textContent = config.user_name || defaultConfig.user_name;
+      document.getElementById('display-bio').textContent = config.user_bio || defaultConfig.user_bio;
+      document.getElementById('display-email').textContent = config.user_email || defaultConfig.user_email;
+      document.getElementById('display-phone').textContent = config.user_phone || defaultConfig.user_phone;
+      
+      document.getElementById('posts-number').textContent = config.posts_count || defaultConfig.posts_count;
+      document.getElementById('followers-number').textContent = config.followers_count || defaultConfig.followers_count;
+      document.getElementById('following-number').textContent = config.following_count || defaultConfig.following_count;
+      
+      document.getElementById('edit-btn-text').textContent = `✏️ ${config.edit_button || defaultConfig.edit_button}`;
+      document.getElementById('share-btn-text').textContent = `🔗 ${config.share_button || defaultConfig.share_button}`;
+      
+      const cameraBtn = document.getElementById('camera-btn');
+      cameraBtn.style.backgroundColor = primaryColor;
+      cameraBtn.style.color = 'white';
+      
+      const editBtn = document.getElementById('edit-btn');
+      editBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      editBtn.style.color = 'white';
+      
+      const shareBtn = document.getElementById('share-btn');
+      shareBtn.style.backgroundColor = surfaceColor;
+      shareBtn.style.color = textColor;
+      shareBtn.style.border = `2px solid ${textColor}20`;
+      
+      const statCards = document.querySelectorAll('.stat-card');
+      statCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const infoCards = document.querySelectorAll('.info-card');
+      infoCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const contactBoxes = [
+        document.getElementById('email-box'),
+        document.getElementById('phone-box'),
+        document.getElementById('location-box')
+      ];
+      contactBoxes.forEach(box => {
+        box.style.backgroundColor = `${primaryColor}10`;
+      });
+      
+      const activityBoxes = [
+        document.getElementById('activity-1'),
+        document.getElementById('activity-2'),
+        document.getElementById('activity-3')
+      ];
+      activityBoxes.forEach(box => {
+        box.style.backgroundColor = `${textColor}05`;
+      });
+      
+      const badges = document.querySelectorAll('.badge');
+      badges.forEach(badge => {
+        badge.style.backgroundColor = `${primaryColor}15`;
+        badge.style.color = primaryColor;
+      });
+      
+      const verifiedBadge = document.getElementById('badge-verified');
+      verifiedBadge.style.backgroundColor = `${primaryColor}20`;
+      verifiedBadge.style.color = primaryColor;
+      
+      const memberBadge = document.getElementById('badge-member');
+      memberBadge.style.backgroundColor = `${secondaryColor}20`;
+      memberBadge.style.color = secondaryColor;
+      
+      const modalContents = document.querySelectorAll('.modal-content');
+      modalContents.forEach(modal => {
+        modal.style.backgroundColor = surfaceColor;
+        modal.style.color = textColor;
+      });
+      
+      const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea');
+      inputs.forEach(input => {
+        input.style.borderColor = `${textColor}20`;
+        input.style.color = textColor;
+        input.style.backgroundColor = surfaceColor;
+      });
+      
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.style.borderColor = primaryColor;
+        });
+        input.addEventListener('blur', function() {
+          this.style.borderColor = `${textColor}20`;
+        });
+      });
+      
+      const confirmAvatarBtn = document.getElementById('confirm-avatar-btn');
+      confirmAvatarBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      confirmAvatarBtn.style.color = 'white';
+      
+      const saveProfileBtn = document.getElementById('save-profile-btn');
+      saveProfileBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      saveProfileBtn.style.color = 'white';
+      
+      const avatarOptions = document.querySelectorAll('.avatar-option');
+      avatarOptions.forEach(option => {
+        if (option.classList.contains('selected')) {
+          option.style.borderColor = primaryColor;
+          option.style.boxShadow = `0 0 0 3px ${primaryColor}50`;
+        }
+      });
+    }
+
+    async function onConfigChange(config) {
+      await applyStyles();
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["user_name", config.user_name || defaultConfig.user_name],
+        ["user_email", config.user_email || defaultConfig.user_email],
+        ["user_phone", config.user_phone || defaultConfig.user_phone],
+        ["user_bio", config.user_bio || defaultConfig.user_bio],
+        ["posts_count", config.posts_count || defaultConfig.posts_count],
+        ["followers_count", config.followers_count || defaultConfig.followers_count],
+        ["following_count", config.following_count || defaultConfig.following_count],
+        ["edit_button", config.edit_button || defaultConfig.edit_button],
+        ["share_button", config.share_button || defaultConfig.share_button]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    applyStyles();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a88ad9872278940',t:'MTc2NDgyMzc3Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

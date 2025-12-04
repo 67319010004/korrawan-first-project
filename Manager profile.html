@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>โปรไฟล์ผู้จัดการ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@500;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .manager-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+    }
+    
+    .profile-avatar {
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover {
+      transform: scale(1.05);
+    }
+    
+    .profile-avatar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0);
+      transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover::before {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .profile-avatar .camera-icon {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      transition: all 0.3s ease;
+    }
+    
+    .profile-avatar:hover .camera-icon {
+      transform: scale(1.1);
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    
+    .info-card {
+      transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      border-radius: 24px;
+      max-width: 650px;
+      width: 90%;
+      max-height: 85%;
+      overflow-y: auto;
+      animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 24px 72px rgba(0, 0, 0, 0.5);
+    }
+    
+    .avatar-option {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 4px solid transparent;
+    }
+    
+    .avatar-option:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.3);
+    }
+    
+    .avatar-option.selected {
+      transform: scale(1.05);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(100px) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+      to { transform: translateX(400px); opacity: 0; }
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 18px;
+      border-radius: 24px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .badge:hover {
+      transform: scale(1.05);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.6s ease;
+    }
+    
+    .team-member {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .team-member:hover {
+      transform: translateX(8px);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full h-full">
+  <div class="manager-container" id="main-container"><!-- Header Banner -->
+   <div class="w-full h-56 relative" id="cover-banner">
+    <div class="absolute inset-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);"></div>
+    <div class="absolute inset-0 flex items-center justify-center">
+     <div class="text-center">
+      <div class="text-6xl mb-3">
+       👔
+      </div>
+      <h1 class="text-4xl font-bold" style="font-family: 'Prompt', sans-serif; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.2);">แดชบอร์ดผู้จัดการ</h1>
+     </div>
+    </div>
+   </div><!-- Profile Content -->
+   <div class="w-full px-6 pb-10">
+    <div class="max-w-6xl mx-auto"><!-- Profile Header -->
+     <div class="relative -mt-24 mb-8">
+      <div class="flex flex-col md:flex-row items-center md:items-end gap-8"><!-- Avatar -->
+       <div class="profile-avatar" onclick="openAvatarSelector()">
+        <div class="w-44 h-44 rounded-full flex items-center justify-center text-8xl font-bold border-4" id="manager-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 12px 40px rgba(0,0,0,0.35); border-color: white;">
+         👨‍💼
+        </div>
+        <div class="camera-icon" id="camera-btn">
+         📷
+        </div>
+       </div><!-- Manager Info -->
+       <div class="flex-1 text-center md:text-left mb-4">
+        <h2 class="text-4xl font-bold mb-2" id="display-name" style="font-family: 'Prompt', sans-serif;">ดร.สมหญิง วิชาการ</h2>
+        <p class="text-xl mb-2" id="display-title" style="opacity: 0.85;">ผู้จัดการฝ่ายปฏิบัติการ</p>
+        <p class="text-base mb-3" id="display-department" style="opacity: 0.7;">แผนก: Operations</p>
+        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+         <div class="badge" id="badge-certified"><span>🎓</span> <span>ได้รับการรับรอง</span>
+         </div>
+         <div class="badge" id="badge-leader"><span>⭐</span> <span>ผู้นำระดับสูง</span>
+         </div>
+         <div class="badge" id="badge-years"><span>📅</span> <span>10+ ปี ประสบการณ์</span>
+         </div>
+        </div>
+       </div><!-- Action Buttons -->
+       <div class="flex flex-col gap-3"><button class="action-btn px-8 py-3 rounded-xl font-bold shadow-lg" id="edit-btn" onclick="openEditModal()"> ✏️ แก้ไขโปรไฟล์ </button> <button class="action-btn px-8 py-3 rounded-xl font-bold shadow-lg" id="contact-btn" onclick="showToast('📧 เปิดหน้าต่างติดต่อ')"> 📧 ติดต่อ </button>
+       </div>
+      </div>
+     </div><!-- Stats Dashboard -->
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="stat-card p-8 rounded-2xl shadow-lg text-center" id="stat-team" onclick="showToast('👥 ดูรายชื่อทีม')">
+       <div class="text-5xl mb-3">
+        👥
+       </div>
+       <div class="text-4xl font-bold mb-2" id="team-number" style="font-family: 'Prompt', sans-serif;">
+        24
+       </div>
+       <div class="text-base" style="opacity: 0.75;">
+        สมาชิกในทีม
+       </div>
+      </div>
+      <div class="stat-card p-8 rounded-2xl shadow-lg text-center" id="stat-projects" onclick="showToast('📊 ดูโปรเจกต์ทั้งหมด')">
+       <div class="text-5xl mb-3">
+        📊
+       </div>
+       <div class="text-4xl font-bold mb-2" id="projects-number" style="font-family: 'Prompt', sans-serif;">
+        12
+       </div>
+       <div class="text-base" style="opacity: 0.75;">
+        โปรเจกต์ที่กำลังดำเนินการ
+       </div>
+      </div>
+      <div class="stat-card p-8 rounded-2xl shadow-lg text-center" id="stat-completion" onclick="showToast('✅ ดูรายงานผลงาน')">
+       <div class="text-5xl mb-3">
+        ✅
+       </div>
+       <div class="text-4xl font-bold mb-2" id="completion-number" style="font-family: 'Prompt', sans-serif;">
+        94%
+       </div>
+       <div class="text-base" style="opacity: 0.75;">
+        อัตราความสำเร็จ
+       </div>
+      </div>
+     </div><!-- Main Content Grid -->
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><!-- Contact Info -->
+      <div class="info-card p-8 rounded-2xl shadow-lg" id="contact-card">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📞 ข้อมูลติดต่อ</h3>
+       <div class="space-y-4">
+        <div class="flex items-center gap-4 p-4 rounded-xl" id="email-box"><span class="text-3xl">📧</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70 mb-1">
+           อีเมลติดต่อ
+          </div>
+          <div class="font-semibold text-lg" id="display-email">
+           manager@company.com
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-4 p-4 rounded-xl" id="phone-box"><span class="text-3xl">📱</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70 mb-1">
+           โทรศัพท์
+          </div>
+          <div class="font-semibold text-lg">
+           02-123-4567 ต่อ 101
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-4 p-4 rounded-xl" id="office-box"><span class="text-3xl">🏢</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70 mb-1">
+           สำนักงาน
+          </div>
+          <div class="font-semibold text-lg">
+           ชั้น 15 อาคาร A ห้อง 1501
+          </div>
+         </div>
+        </div>
+        <div class="flex items-center gap-4 p-4 rounded-xl" id="hours-box"><span class="text-3xl">🕐</span>
+         <div class="flex-1">
+          <div class="text-sm opacity-70 mb-1">
+           เวลาทำการ
+          </div>
+          <div class="font-semibold text-lg">
+           จันทร์-ศุกร์ 9:00-18:00
+          </div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Team Overview -->
+      <div class="info-card p-8 rounded-2xl shadow-lg" id="team-card">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">👥 ทีมงาน</h3>
+       <div class="space-y-3">
+        <div class="team-member flex items-center gap-4 p-4 rounded-xl" id="team-1" onclick="showToast('ดูข้อมูล: สมศักดิ์ ทำงาน')">
+         <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          👨‍💻
+         </div>
+         <div class="flex-1">
+          <div class="font-bold">
+           สมศักดิ์ ทำงาน
+          </div>
+          <div class="text-sm opacity-70">
+           หัวหน้าทีมพัฒนา
+          </div>
+         </div><span class="text-2xl">→</span>
+        </div>
+        <div class="team-member flex items-center gap-4 p-4 rounded-xl" id="team-2" onclick="showToast('ดูข้อมูล: วิภา สร้างสรรค์')">
+         <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+          👩‍🎨
+         </div>
+         <div class="flex-1">
+          <div class="font-bold">
+           วิภา สร้างสรรค์
+          </div>
+          <div class="text-sm opacity-70">
+           หัวหน้าทีมดีไซน์
+          </div>
+         </div><span class="text-2xl">→</span>
+        </div>
+        <div class="team-member flex items-center gap-4 p-4 rounded-xl" id="team-3" onclick="showToast('ดูข้อมูล: ประเสริฐ วิเคราะห์')">
+         <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+          👨‍💼
+         </div>
+         <div class="flex-1">
+          <div class="font-bold">
+           ประเสริฐ วิเคราะห์
+          </div>
+          <div class="text-sm opacity-70">
+           หัวหน้าทีมวิเคราะห์
+          </div>
+         </div><span class="text-2xl">→</span>
+        </div>
+        <div class="team-member flex items-center gap-4 p-4 rounded-xl" id="team-4" onclick="showToast('ดูข้อมูล: สุวรรณา คุณภาพ')">
+         <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+          👩‍🔬
+         </div>
+         <div class="flex-1">
+          <div class="font-bold">
+           สุวรรณา คุณภาพ
+          </div>
+          <div class="text-sm opacity-70">
+           หัวหน้าทีม QA
+          </div>
+         </div><span class="text-2xl">→</span>
+        </div>
+       </div>
+      </div><!-- Performance Metrics -->
+      <div class="info-card p-8 rounded-2xl shadow-lg" id="performance-card">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📈 ประสิทธิภาพ</h3>
+       <div class="space-y-6">
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-semibold">ความสำเร็จของโปรเจกต์</span> <span class="font-bold" id="metric-1">94%</span>
+         </div>
+         <div class="progress-bar" id="progress-1-bg">
+          <div class="progress-fill" id="progress-1" style="width: 94%;"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-semibold">ความพึงพอใจของทีม</span> <span class="font-bold" id="metric-2">88%</span>
+         </div>
+         <div class="progress-bar" id="progress-2-bg">
+          <div class="progress-fill" id="progress-2" style="width: 88%;"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-semibold">ส่งมอบตรงเวลา</span> <span class="font-bold" id="metric-3">92%</span>
+         </div>
+         <div class="progress-bar" id="progress-3-bg">
+          <div class="progress-fill" id="progress-3" style="width: 92%;"></div>
+         </div>
+        </div>
+        <div>
+         <div class="flex justify-between mb-2"><span class="font-semibold">ประสิทธิภาพงบประมาณ</span> <span class="font-bold" id="metric-4">85%</span>
+         </div>
+         <div class="progress-bar" id="progress-4-bg">
+          <div class="progress-fill" id="progress-4" style="width: 85%;"></div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Key Achievements -->
+      <div class="info-card p-8 rounded-2xl shadow-lg" id="achievements-card">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">🏆 ความสำเร็จ</h3>
+       <div class="space-y-4">
+        <div class="flex items-start gap-4 p-4 rounded-xl" id="achievement-1"><span class="text-3xl">🥇</span>
+         <div class="flex-1">
+          <div class="font-bold mb-1">
+           ผู้จัดการยอดเยี่ยมประจำปี 2023
+          </div>
+          <div class="text-sm opacity-70">
+           ได้รับรางวัลจากทีมบริหารระดับสูง
+          </div>
+         </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-xl" id="achievement-2"><span class="text-3xl">💡</span>
+         <div class="flex-1">
+          <div class="font-bold mb-1">
+           นวัตกรรมด้านกระบวนการทำงาน
+          </div>
+          <div class="text-sm opacity-70">
+           ลดเวลาการทำงาน 30% ด้วยระบบใหม่
+          </div>
+         </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-xl" id="achievement-3"><span class="text-3xl">🎯</span>
+         <div class="flex-1">
+          <div class="font-bold mb-1">
+           ทำโปรเจกต์สำเร็จ 50+ โครงการ
+          </div>
+          <div class="text-sm opacity-70">
+           ตลอดอาชีพการงาน
+          </div>
+         </div>
+        </div>
+        <div class="flex items-start gap-4 p-4 rounded-xl" id="achievement-4"><span class="text-3xl">👥</span>
+         <div class="flex-1">
+          <div class="font-bold mb-1">
+           พัฒนาทีมงาน 100+ คน
+          </div>
+          <div class="text-sm opacity-70">
+           สร้างผู้นำรุ่นใหม่ในองค์กร
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatar-modal">
+   <div class="modal-content p-10" id="avatar-modal-content">
+    <div class="flex items-center justify-between mb-6">
+     <h3 class="text-3xl font-bold" style="font-family: 'Prompt', sans-serif;">📷 เลือกรูปโปรไฟล์</h3><button class="text-5xl opacity-70 hover:opacity-100 transition-all leading-none" onclick="closeAvatarModal()">×</button>
+    </div>
+    <p class="text-lg mb-6 opacity-70">เลือกรูปโปรไฟล์ที่เหมาะสมสำหรับผู้จัดการ</p>
+    <div class="grid grid-cols-4 gap-5 mb-8">
+     <div class="avatar-option selected" data-emoji="👨‍💼" onclick="selectAvatar('👨‍💼', event)" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+      👨‍💼
+     </div>
+     <div class="avatar-option" data-emoji="👩‍💼" onclick="selectAvatar('👩‍💼', event)" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+      👩‍💼
+     </div>
+     <div class="avatar-option" data-emoji="🧑‍💼" onclick="selectAvatar('🧑‍💼', event)" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+      🧑‍💼
+     </div>
+     <div class="avatar-option" data-emoji="👔" onclick="selectAvatar('👔', event)" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+      👔
+     </div>
+     <div class="avatar-option" data-emoji="👨‍💻" onclick="selectAvatar('👨‍💻', event)" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+      👨‍💻
+     </div>
+     <div class="avatar-option" data-emoji="👩‍💻" onclick="selectAvatar('👩‍💻', event)" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);">
+      👩‍💻
+     </div>
+     <div class="avatar-option" data-emoji="👨‍🎓" onclick="selectAvatar('👨‍🎓', event)" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+      👨‍🎓
+     </div>
+     <div class="avatar-option" data-emoji="👩‍🎓" onclick="selectAvatar('👩‍🎓', event)" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
+      👩‍🎓
+     </div>
+     <div class="avatar-option" data-emoji="🧑‍🏫" onclick="selectAvatar('🧑‍🏫', event)" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+      🧑‍🏫
+     </div>
+     <div class="avatar-option" data-emoji="👨‍⚖️" onclick="selectAvatar('👨‍⚖️', event)" style="background: linear-gradient(135deg, #ff6e7f 0%, #bfe9ff 100%);">
+      👨‍⚖️
+     </div>
+     <div class="avatar-option" data-emoji="👩‍⚖️" onclick="selectAvatar('👩‍⚖️', event)" style="background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);">
+      👩‍⚖️
+     </div>
+     <div class="avatar-option" data-emoji="🎯" onclick="selectAvatar('🎯', event)" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+      🎯
+     </div>
+     <div class="avatar-option" data-emoji="💼" onclick="selectAvatar('💼', event)" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+      💼
+     </div>
+     <div class="avatar-option" data-emoji="🏆" onclick="selectAvatar('🏆', event)" style="background: linear-gradient(135deg, #fdcbf1 0%, #e6dee9 100%);">
+      🏆
+     </div>
+     <div class="avatar-option" data-emoji="⭐" onclick="selectAvatar('⭐', event)" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+      ⭐
+     </div>
+     <div class="avatar-option" data-emoji="👑" onclick="selectAvatar('👑', event)" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+      👑
+     </div>
+    </div><button class="action-btn w-full py-4 rounded-xl font-bold shadow-lg text-lg" id="confirm-avatar-btn" onclick="confirmAvatar()"> ✅ ยืนยันการเลือก </button>
+   </div>
+  </div><!-- Edit Profile Modal -->
+  <div class="modal-overlay" id="edit-modal">
+   <div class="modal-content p-10" id="edit-modal-content">
+    <div class="flex items-center justify-between mb-6">
+     <h3 class="text-3xl font-bold" style="font-family: 'Prompt', sans-serif;">✏️ แก้ไขโปรไฟล์</h3><button class="text-5xl opacity-70 hover:opacity-100 transition-all leading-none" onclick="closeEditModal()">×</button>
+    </div>
+    <div class="space-y-5 mb-8">
+     <div><label for="edit-name" class="block text-base font-semibold mb-2">ชื่อ-นามสกุล</label> <input type="text" id="edit-name" class="w-full px-5 py-4 rounded-xl border-2 focus:outline-none transition-all text-lg" placeholder="กรอกชื่อ" value="ดร.สมหญิง วิชาการ">
+     </div>
+     <div><label for="edit-title" class="block text-base font-semibold mb-2">ตำแหน่งงาน</label> <input type="text" id="edit-title" class="w-full px-5 py-4 rounded-xl border-2 focus:outline-none transition-all text-lg" placeholder="กรอกตำแหน่ง" value="ผู้จัดการฝ่ายปฏิบัติการ">
+     </div>
+     <div><label for="edit-department" class="block text-base font-semibold mb-2">แผนก</label> <input type="text" id="edit-department" class="w-full px-5 py-4 rounded-xl border-2 focus:outline-none transition-all text-lg" placeholder="กรอกชื่อแผนก" value="Operations">
+     </div>
+     <div><label for="edit-email" class="block text-base font-semibold mb-2">อีเมล</label> <input type="email" id="edit-email" class="w-full px-5 py-4 rounded-xl border-2 focus:outline-none transition-all text-lg" placeholder="กรอกอีเมล" value="manager@company.com">
+     </div>
+    </div><button class="action-btn w-full py-4 rounded-xl font-bold shadow-lg text-lg" id="save-profile-btn" onclick="saveProfile()"> 💾 บันทึกการเปลี่ยนแปลง </button>
+   </div>
+  </div><!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>
+  <script>
+    const defaultConfig = {
+      background_color: "#f0f4f8",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#667eea",
+      secondary_action_color: "#764ba2",
+      font_family: "Sarabun",
+      font_size: 16,
+      manager_name: "ดร.สมหญิง วิชาการ",
+      manager_title: "ผู้จัดการฝ่ายปฏิบัติการ",
+      manager_email: "manager@company.com",
+      manager_department: "Operations",
+      team_members: "24",
+      active_projects: "12",
+      completion_rate: "94%"
+    };
+
+    let currentAvatar = '👨‍💼';
+    let selectedAvatarTemp = '👨‍💼';
+
+    function openAvatarSelector() {
+      document.getElementById('avatar-modal').style.display = 'flex';
+      selectedAvatarTemp = currentAvatar;
+      
+      document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+        if (option.dataset.emoji === currentAvatar) {
+          option.classList.add('selected');
+        }
+      });
+    }
+
+    function closeAvatarModal() {
+      document.getElementById('avatar-modal').style.display = 'none';
+    }
+
+    function selectAvatar(emoji, event) {
+      selectedAvatarTemp = emoji;
+      
+      document.querySelectorAll('.avatar-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      
+      event.currentTarget.classList.add('selected');
+    }
+
+    function confirmAvatar() {
+      currentAvatar = selectedAvatarTemp;
+      document.getElementById('manager-avatar').textContent = currentAvatar;
+      closeAvatarModal();
+      showToast('✅ เปลี่ยนรูปโปรไฟล์สำเร็จ!');
+    }
+
+    function openEditModal() {
+      document.getElementById('edit-modal').style.display = 'flex';
+      
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      document.getElementById('edit-name').value = config.manager_name || defaultConfig.manager_name;
+      document.getElementById('edit-title').value = config.manager_title || defaultConfig.manager_title;
+      document.getElementById('edit-department').value = config.manager_department || defaultConfig.manager_department;
+      document.getElementById('edit-email').value = config.manager_email || defaultConfig.manager_email;
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    function saveProfile() {
+      const name = document.getElementById('edit-name').value;
+      const title = document.getElementById('edit-title').value;
+      const department = document.getElementById('edit-department').value;
+      const email = document.getElementById('edit-email').value;
+      
+      document.getElementById('display-name').textContent = name;
+      document.getElementById('display-title').textContent = title;
+      document.getElementById('display-department').textContent = 'แผนก: ' + department;
+      document.getElementById('display-email').textContent = email;
+      
+      if (window.elementSdk) {
+        window.elementSdk.setConfig({
+          manager_name: name,
+          manager_title: title,
+          manager_department: department,
+          manager_email: email
+        });
+      }
+      
+      closeEditModal();
+      showToast('💾 บันทึกข้อมูลโปรไฟล์สำเร็จ!');
+    }
+
+    function showToast(message) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        padding: 18px 28px;
+        border-radius: 14px;
+        font-weight: 600;
+        background-color: ${primaryColor};
+        color: white;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+        margin-bottom: 12px;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        max-width: 420px;
+        font-size: 16px;
+      `;
+      
+      document.getElementById('toast-container').appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.4s ease-in';
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    async function applyStyles() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      
+      document.getElementById('main-container').style.backgroundColor = bgColor;
+      
+      document.getElementById('display-name').textContent = config.manager_name || defaultConfig.manager_name;
+      document.getElementById('display-title').textContent = config.manager_title || defaultConfig.manager_title;
+      document.getElementById('display-department').textContent = 'แผนก: ' + (config.manager_department || defaultConfig.manager_department);
+      document.getElementById('display-email').textContent = config.manager_email || defaultConfig.manager_email;
+      
+      document.getElementById('team-number').textContent = config.team_members || defaultConfig.team_members;
+      document.getElementById('projects-number').textContent = config.active_projects || defaultConfig.active_projects;
+      document.getElementById('completion-number').textContent = config.completion_rate || defaultConfig.completion_rate;
+      
+      const cameraBtn = document.getElementById('camera-btn');
+      cameraBtn.style.backgroundColor = primaryColor;
+      cameraBtn.style.color = 'white';
+      
+      const editBtn = document.getElementById('edit-btn');
+      editBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      editBtn.style.color = 'white';
+      
+      const contactBtn = document.getElementById('contact-btn');
+      contactBtn.style.backgroundColor = surfaceColor;
+      contactBtn.style.color = textColor;
+      contactBtn.style.border = `2px solid ${textColor}25`;
+      
+      const statCards = document.querySelectorAll('.stat-card');
+      statCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const infoCards = document.querySelectorAll('.info-card');
+      infoCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const contactBoxes = [
+        document.getElementById('email-box'),
+        document.getElementById('phone-box'),
+        document.getElementById('office-box'),
+        document.getElementById('hours-box')
+      ];
+      contactBoxes.forEach(box => {
+        box.style.backgroundColor = `${primaryColor}08`;
+      });
+      
+      const teamMembers = document.querySelectorAll('.team-member');
+      teamMembers.forEach(member => {
+        member.style.backgroundColor = `${textColor}04`;
+      });
+      
+      const achievements = [
+        document.getElementById('achievement-1'),
+        document.getElementById('achievement-2'),
+        document.getElementById('achievement-3'),
+        document.getElementById('achievement-4')
+      ];
+      achievements.forEach(achievement => {
+        achievement.style.backgroundColor = `${primaryColor}08`;
+      });
+      
+      const badges = document.querySelectorAll('.badge');
+      badges.forEach(badge => {
+        badge.style.backgroundColor = `${primaryColor}15`;
+        badge.style.color = primaryColor;
+      });
+      
+      const progressBars = document.querySelectorAll('.progress-bar');
+      progressBars.forEach(bar => {
+        bar.style.backgroundColor = `${textColor}15`;
+      });
+      
+      const progressFills = document.querySelectorAll('.progress-fill');
+      progressFills.forEach(fill => {
+        fill.style.background = `linear-gradient(90deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      });
+      
+      const modalContents = document.querySelectorAll('.modal-content');
+      modalContents.forEach(modal => {
+        modal.style.backgroundColor = surfaceColor;
+        modal.style.color = textColor;
+      });
+      
+      const inputs = document.querySelectorAll('input[type="text"], input[type="email"]');
+      inputs.forEach(input => {
+        input.style.borderColor = `${textColor}25`;
+        input.style.color = textColor;
+        input.style.backgroundColor = surfaceColor;
+      });
+      
+      inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+          this.style.borderColor = primaryColor;
+        });
+        input.addEventListener('blur', function() {
+          this.style.borderColor = `${textColor}25`;
+        });
+      });
+      
+      const confirmAvatarBtn = document.getElementById('confirm-avatar-btn');
+      confirmAvatarBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      confirmAvatarBtn.style.color = 'white';
+      
+      const saveProfileBtn = document.getElementById('save-profile-btn');
+      saveProfileBtn.style.background = `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`;
+      saveProfileBtn.style.color = 'white';
+      
+      const avatarOptions = document.querySelectorAll('.avatar-option');
+      avatarOptions.forEach(option => {
+        if (option.classList.contains('selected')) {
+          option.style.borderColor = primaryColor;
+          option.style.boxShadow = `0 0 0 4px ${primaryColor}50`;
+        }
+      });
+    }
+
+    async function onConfigChange(config) {
+      await applyStyles();
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["manager_name", config.manager_name || defaultConfig.manager_name],
+        ["manager_title", config.manager_title || defaultConfig.manager_title],
+        ["manager_email", config.manager_email || defaultConfig.manager_email],
+        ["manager_department", config.manager_department || defaultConfig.manager_department],
+        ["team_members", config.team_members || defaultConfig.team_members],
+        ["active_projects", config.active_projects || defaultConfig.active_projects],
+        ["completion_rate", config.completion_rate || defaultConfig.completion_rate]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    applyStyles();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a88b683d5998940',t:'MTc2NDgyNDE0MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

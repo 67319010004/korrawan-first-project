@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แดชบอร์ดลูกค้า - StoryByte</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@400;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .novel-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .novel-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    
+    .tab-item.active {
+      transform: scale(1.05);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: scale(1.05);
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full h-full">
+  <div class="w-full h-full flex flex-col" id="main-container"><!-- Header -->
+   <header class="p-6 border-b flex items-center justify-between" id="header">
+    <div class="flex items-center gap-4">
+     <div class="flex items-center gap-3"><span class="text-4xl">📚</span>
+      <div>
+       <h1 class="text-2xl font-bold" id="brand-name" style="font-family: 'Prompt', sans-serif;">StoryByte</h1>
+       <p class="text-sm opacity-70" id="user-greeting-text">สวัสดี, นักอ่าน!</p>
+      </div>
+     </div>
+    </div>
+    <div class="flex items-center gap-4">
+     <div class="flex items-center gap-2 px-4 py-2 rounded-lg" id="streak-indicator"><span class="text-2xl pulse-animation">🔥</span>
+      <div>
+       <div class="text-xs opacity-70">
+        สตรีค
+       </div>
+       <div class="text-sm font-bold">
+        7 วัน
+       </div>
+      </div>
+     </div><button class="action-btn px-6 py-3 rounded-xl font-semibold" id="profile-btn" onclick="showToast('👤 โปรไฟล์ของคุณ')"> 👤 โปรไฟล์ </button>
+    </div>
+   </header><!-- Main Content -->
+   <main class="flex-1 overflow-y-auto" id="main-content"><!-- Stats Bar -->
+    <div class="p-6 border-b" id="stats-bar">
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="stat-card text-center p-4 rounded-xl" id="stat-1">
+       <div class="text-3xl mb-2">
+        📖
+       </div>
+       <div class="text-2xl font-bold">
+        4
+       </div>
+       <div class="text-sm opacity-70">
+        กำลังอ่าน
+       </div>
+      </div>
+      <div class="stat-card text-center p-4 rounded-xl" id="stat-2">
+       <div class="text-3xl mb-2">
+        💖
+       </div>
+       <div class="text-2xl font-bold">
+        35
+       </div>
+       <div class="text-sm opacity-70">
+        คอลเลกชั่น
+       </div>
+      </div>
+      <div class="stat-card text-center p-4 rounded-xl" id="stat-3">
+       <div class="text-3xl mb-2">
+        📜
+       </div>
+       <div class="text-2xl font-bold">
+        127
+       </div>
+       <div class="text-sm opacity-70">
+        อ่านแล้ว
+       </div>
+      </div>
+      <div class="stat-card text-center p-4 rounded-xl" id="stat-4">
+       <div class="text-3xl mb-2">
+        ⏱️
+       </div>
+       <div class="text-2xl font-bold">
+        45 ชม.
+       </div>
+       <div class="text-sm opacity-70">
+        เวลาอ่าน
+       </div>
+      </div>
+     </div>
+    </div><!-- Tabs -->
+    <div class="p-6 border-b" id="tabs-container">
+     <div class="flex gap-3 overflow-x-auto">
+      <div class="tab-item active" id="tab-reading" onclick="switchTab('reading')">
+       📖 กำลังอ่าน
+      </div>
+      <div class="tab-item" id="tab-collection" onclick="switchTab('collection')">
+       💖 คอลเลกชั่น
+      </div>
+      <div class="tab-item" id="tab-recommend" onclick="switchTab('recommend')">
+       🌟 แนะนำ
+      </div>
+      <div class="tab-item" id="tab-history" onclick="switchTab('history')">
+       📜 ประวัติ
+      </div>
+      <div class="tab-item" id="tab-stats" onclick="switchTab('stats')">
+       📊 สถิติ
+      </div>
+     </div>
+    </div><!-- Content Area -->
+    <div class="p-6" id="content-area"><!-- Dynamic content will load here -->
+    </div>
+   </main>
+  </div><!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div>
+  <script>
+    const defaultConfig = {
+      background_color: "#f8fafc",
+      surface_color: "#ffffff",
+      text_color: "#0f172a",
+      primary_action_color: "#8b5cf6",
+      secondary_action_color: "#ec4899",
+      font_family: "Sarabun",
+      font_size: 16,
+      brand_name: "StoryByte",
+      user_greeting: "สวัสดี",
+      reading_title: "กำลังอ่าน",
+      collection_title: "คอลเลกชั่นของฉัน",
+      recommend_title: "แนะนำสำหรับคุณ",
+      history_title: "ประวัติการอ่าน"
+    };
+
+    let currentTab = 'reading';
+    
+    const readingNovels = [
+      { 
+        id: 1, 
+        title: 'ดอกไม้ในสายลม', 
+        author: 'ดาวใจ สวยงาม', 
+        category: 'โรแมนติก',
+        cover: '🌸',
+        currentChapter: 12,
+        totalChapters: 15,
+        progress: 80,
+        lastRead: '2 ชม. ที่แล้ว',
+        rating: 4.8
+      },
+      { 
+        id: 2, 
+        title: 'ใจเธอใจฉัน', 
+        author: 'จันทร์เพ็ญ ใสสะอาด', 
+        category: 'แฟนตาซี',
+        cover: '💫',
+        currentChapter: 8,
+        totalChapters: 23,
+        progress: 35,
+        lastRead: '5 ชม. ที่แล้ว',
+        rating: 4.9
+      },
+      { 
+        id: 3, 
+        title: 'รักที่ปลายฝัน', 
+        author: 'ดอกไม้ หอมหวน', 
+        category: 'วัยรุ่น',
+        cover: '🌟',
+        currentChapter: 15,
+        totalChapters: 18,
+        progress: 83,
+        lastRead: 'เมื่อวาน',
+        rating: 4.6
+      },
+      { 
+        id: 4, 
+        title: 'หัวใจไม่หยุดรัก', 
+        author: 'ดาวดิน สดใส', 
+        category: 'ดราม่า',
+        cover: '💗',
+        currentChapter: 3,
+        totalChapters: 12,
+        progress: 25,
+        lastRead: 'เมื่อวาน',
+        rating: 4.7
+      }
+    ];
+
+    const collections = {
+      favorites: [
+        { id: 5, title: 'เธอคือแสงในใจฉัน', author: 'ดาวใจ', category: 'โรแมนติก', cover: '🌟', rating: 4.8, reads: 125000 },
+        { id: 6, title: 'ฝันที่เป็นจริง', author: 'จันทร์เพ็ญ', category: 'แฟนตาซี', cover: '🌙', rating: 4.9, reads: 234000 },
+        { id: 7, title: 'รักในมหาวิทยาลัย', author: 'ดอกไม้', category: 'วัยรุ่น', cover: '🎓', rating: 4.7, reads: 156000 },
+        { id: 8, title: 'ทุกวันที่มีเธอ', author: 'ดาวดิน', category: 'โรแมนติก', cover: '💕', rating: 4.9, reads: 189000 }
+      ],
+      bookmarks: [
+        { id: 9, title: 'ความรักในฝัน', author: 'ดอกไม้', category: 'โรแมนติก', cover: '💝', rating: 4.6, reads: 89000 },
+        { id: 10, title: 'โลกแห่งเวทมนตร์', author: 'จันทร์', category: 'แฟนตาซี', cover: '✨', rating: 4.8, reads: 145000 },
+        { id: 11, title: 'ผจญภัยในดินแดนใหม่', author: 'ดาว', category: 'ผจญภัย', cover: '🗺️', rating: 4.5, reads: 67000 }
+      ],
+      toRead: [
+        { id: 12, title: 'ความลับในคืนฝน', author: 'ใจดี', category: 'ลึกลับ', cover: '🔍', rating: 4.7, reads: 98000 },
+        { id: 13, title: 'รักแท้ไม่มีวันจืดจาง', author: 'หวาน', category: 'โรแมนติก', cover: '💖', rating: 4.8, reads: 176000 },
+        { id: 14, title: 'เหนือกาลเวลา', author: 'เวลา', category: 'แฟนตาซี', cover: '⏰', rating: 4.6, reads: 112000 }
+      ]
+    };
+
+    const recommendedNovels = [
+      { id: 15, title: 'ใจเธอใจฉัน', author: 'ดาวใจ', category: 'โรแมนติก', cover: '💞', rating: 4.9, reads: 234000, reason: 'คุณชอบเรื่องโรแมนติก' },
+      { id: 16, title: 'เวทมนตร์แห่งรัก', author: 'จันทร์', category: 'แฟนตาซี', cover: '🔮', rating: 4.8, reads: 189000, reason: 'ผู้อ่านที่ชอบแฟนตาซีแนะนำ' },
+      { id: 17, title: 'วัยหนุ่มในมหาลัย', author: 'ดอกไม้', category: 'วัยรุ่น', cover: '🎒', rating: 4.7, reads: 156000, reason: 'เรื่องยอดนิยมในหมวดนี้' },
+      { id: 18, title: 'ดราม่าแห่งชีวิต', author: 'ดาวดิน', category: 'ดราม่า', cover: '🎭', rating: 4.6, reads: 134000, reason: 'คล้ายกับที่คุณอ่าน' }
+    ];
+
+    const historyNovels = [
+      { id: 19, title: 'ดอกไม้ในสายลม', author: 'ดาวใจ', category: 'โรแมนติก', cover: '🌸', readDate: 'วันนี้ 14:30', chapters: 12 },
+      { id: 20, title: 'ใจเธอใจฉัน', author: 'จันทร์เพ็ญ', category: 'แฟนตาซี', cover: '💫', readDate: 'วันนี้ 09:15', chapters: 8 },
+      { id: 21, title: 'รักที่ปลายฝัน', author: 'ดอกไม้', category: 'วัยรุ่น', cover: '🌟', readDate: 'เมื่อวาน 20:45', chapters: 15 },
+      { id: 22, title: 'หัวใจไม่หยุดรัก', author: 'ดาวดิน', category: 'ดราม่า', cover: '💗', readDate: 'เมื่อวาน 18:20', chapters: 3 },
+      { id: 23, title: 'เธอคือแสงในใจฉัน', author: 'ดาวใจ', category: 'โรแมนติก', cover: '🌟', readDate: '2 วันที่แล้ว', chapters: 20 },
+      { id: 24, title: 'ฝันที่เป็นจริง', author: 'จันทร์เพ็ญ', category: 'แฟนตาซี', cover: '🌙', readDate: '2 วันที่แล้ว', chapters: 15 }
+    ];
+
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      const tabs = document.querySelectorAll('.tab-item');
+      tabs.forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      
+      loadContent(tab);
+      applyStyles();
+    }
+
+    function loadContent(tab) {
+      const content = document.getElementById('content-area');
+      
+      switch(tab) {
+        case 'reading':
+          content.innerHTML = getReadingContent();
+          break;
+        case 'collection':
+          content.innerHTML = getCollectionContent();
+          break;
+        case 'recommend':
+          content.innerHTML = getRecommendContent();
+          break;
+        case 'history':
+          content.innerHTML = getHistoryContent();
+          break;
+        case 'stats':
+          content.innerHTML = getStatsContent();
+          break;
+      }
+      
+      content.classList.add('fade-in');
+    }
+
+    function getReadingContent() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const readingTitle = config.reading_title || defaultConfig.reading_title;
+      
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">📖 ${readingTitle}</h2>
+          <p class="text-sm opacity-70">อ่านต่อจากจุดที่ค้างไว้</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ${readingNovels.map(novel => `
+            <div class="novel-card p-6 rounded-2xl shadow-lg">
+              <div class="flex gap-4 mb-4">
+                <div class="w-24 h-32 rounded-xl flex items-center justify-center text-5xl flex-shrink-0" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold mb-1">${novel.title}</h3>
+                  <p class="text-sm opacity-70 mb-2">โดย ${novel.author}</p>
+                  <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-2" style="background-color: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                    ${novel.category}
+                  </span>
+                  <div class="flex items-center gap-2 text-xs opacity-70">
+                    <span>⭐ ${novel.rating}</span>
+                    <span>•</span>
+                    <span>📅 ${novel.lastRead}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <div class="flex items-center justify-between text-sm mb-2">
+                  <span class="font-semibold">ตอนที่ ${novel.currentChapter}/${novel.totalChapters}</span>
+                  <span class="font-bold">${novel.progress}%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div class="progress-bar h-3 rounded-full" style="width: ${novel.progress}%; background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%);"></div>
+                </div>
+              </div>
+              
+              <div class="flex gap-2">
+                <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="continueReading(${novel.id}, '${novel.title}')">
+                  📖 อ่านต่อ
+                </button>
+                <button class="action-btn px-4 py-3 rounded-xl font-semibold" onclick="showToast('💬 แสดงความคิดเห็น')">
+                  💬
+                </button>
+                <button class="action-btn px-4 py-3 rounded-xl font-semibold" onclick="showToast('📤 แชร์')">
+                  📤
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="mt-8 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">🎯 เป้าหมายวันนี้</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="text-center p-4 rounded-xl" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+              <div class="text-3xl mb-2">📚</div>
+              <div class="text-2xl font-bold mb-1">3/5</div>
+              <div class="text-sm opacity-80">ตอนที่อ่าน</div>
+            </div>
+            <div class="text-center p-4 rounded-xl" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+              <div class="text-3xl mb-2">⏱️</div>
+              <div class="text-2xl font-bold mb-1">45/60</div>
+              <div class="text-sm opacity-80">นาที</div>
+            </div>
+            <div class="text-center p-4 rounded-xl" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+              <div class="text-3xl mb-2">🔥</div>
+              <div class="text-2xl font-bold mb-1">7</div>
+              <div class="text-sm opacity-80">วันติดต่อกัน</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getCollectionContent() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const collectionTitle = config.collection_title || defaultConfig.collection_title;
+      
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">💖 ${collectionTitle}</h2>
+          <p class="text-sm opacity-70">จัดการนิยายที่คุณชื่นชอบ</p>
+        </div>
+
+        <!-- Favorites -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold" style="font-family: 'Prompt', sans-serif;">❤️ รายการโปรด (${collections.favorites.length})</h3>
+            <button class="action-btn px-4 py-2 rounded-lg text-sm font-semibold" onclick="showToast('📂 จัดการรายการโปรด')">
+              จัดการ
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            ${collections.favorites.map(novel => `
+              <div class="novel-card p-4 rounded-xl shadow">
+                <div class="w-full h-40 rounded-lg flex items-center justify-center text-5xl mb-3" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                  ${novel.cover}
+                </div>
+                <h4 class="font-bold mb-1 text-sm">${novel.title}</h4>
+                <p class="text-xs opacity-70 mb-2">${novel.author}</p>
+                <div class="flex items-center justify-between text-xs mb-3">
+                  <span>⭐ ${novel.rating}</span>
+                  <span class="opacity-70">${(novel.reads / 1000).toFixed(0)}K อ่าน</span>
+                </div>
+                <button class="action-btn w-full py-2 rounded-lg text-sm font-semibold" onclick="startReading(${novel.id}, '${novel.title}')">
+                  เริ่มอ่าน
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Bookmarks -->
+        <div class="mb-8">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold" style="font-family: 'Prompt', sans-serif;">🔖 บุ๊กมาร์ก (${collections.bookmarks.length})</h3>
+            <button class="action-btn px-4 py-2 rounded-lg text-sm font-semibold" onclick="showToast('📂 จัดการบุ๊กมาร์ก')">
+              จัดการ
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${collections.bookmarks.map(novel => `
+              <div class="novel-card p-4 rounded-xl shadow flex gap-3">
+                <div class="w-20 h-28 rounded-lg flex items-center justify-center text-3xl flex-shrink-0" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-bold mb-1 text-sm">${novel.title}</h4>
+                  <p class="text-xs opacity-70 mb-2">${novel.author}</p>
+                  <div class="text-xs mb-2">⭐ ${novel.rating}</div>
+                  <button class="action-btn w-full py-2 rounded-lg text-xs font-semibold" onclick="startReading(${novel.id}, '${novel.title}')">
+                    อ่าน
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- To Read -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold" style="font-family: 'Prompt', sans-serif;">📚 รออ่าน (${collections.toRead.length})</h3>
+            <button class="action-btn px-4 py-2 rounded-lg text-sm font-semibold" onclick="showToast('📂 จัดการรายการรออ่าน')">
+              จัดการ
+            </button>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${collections.toRead.map(novel => `
+              <div class="novel-card p-4 rounded-xl shadow flex gap-3">
+                <div class="w-20 h-28 rounded-lg flex items-center justify-center text-3xl flex-shrink-0" style="background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h4 class="font-bold mb-1 text-sm">${novel.title}</h4>
+                  <p class="text-xs opacity-70 mb-2">${novel.author}</p>
+                  <div class="text-xs mb-2">⭐ ${novel.rating}</div>
+                  <button class="action-btn w-full py-2 rounded-lg text-xs font-semibold" onclick="startReading(${novel.id}, '${novel.title}')">
+                    เริ่มอ่าน
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function getRecommendContent() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const recommendTitle = config.recommend_title || defaultConfig.recommend_title;
+      
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">🌟 ${recommendTitle}</h2>
+          <p class="text-sm opacity-70">นิยายที่คัดสรรมาเพื่อคุณโดยเฉพาะ</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ${recommendedNovels.map(novel => `
+            <div class="novel-card p-6 rounded-2xl shadow-lg">
+              <div class="flex gap-4 mb-4">
+                <div class="w-28 h-36 rounded-xl flex items-center justify-center text-5xl flex-shrink-0" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold mb-1">${novel.title}</h3>
+                  <p class="text-sm opacity-70 mb-2">โดย ${novel.author}</p>
+                  <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold mb-3" style="background-color: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                    ${novel.category}
+                  </span>
+                  <div class="flex items-center gap-3 text-sm mb-2">
+                    <span>⭐ ${novel.rating}</span>
+                    <span class="opacity-70">${(novel.reads / 1000).toFixed(0)}K อ่าน</span>
+                  </div>
+                  <div class="text-xs px-3 py-2 rounded-lg inline-block" style="background-color: rgba(236, 72, 153, 0.1); color: #ec4899;">
+                    💡 ${novel.reason}
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex gap-2">
+                <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="startReading(${novel.id}, '${novel.title}')">
+                  📖 เริ่มอ่าน
+                </button>
+                <button class="action-btn px-4 py-3 rounded-xl font-semibold" onclick="addToCollection(${novel.id}, '${novel.title}')">
+                  ➕
+                </button>
+                <button class="action-btn px-4 py-3 rounded-xl font-semibold" onclick="showToast('ℹ️ รายละเอียด ${novel.title}')">
+                  ℹ️
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="mt-8 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">🔥 กำลังฮิตในหมวดที่คุณชอบ</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            ${[
+              { category: 'โรแมนติก', icon: '💕', count: 145 },
+              { category: 'แฟนตาซี', icon: '✨', count: 89 },
+              { category: 'วัยรุ่น', icon: '🎓', count: 67 },
+              { category: 'ดราม่า', icon: '🎭', count: 52 }
+            ].map(cat => `
+              <button class="action-btn text-center p-4 rounded-xl" onclick="showToast('🔍 ดู${cat.category}ทั้งหมด')">
+                <div class="text-4xl mb-2">${cat.icon}</div>
+                <div class="font-bold mb-1">${cat.category}</div>
+                <div class="text-sm opacity-70">${cat.count} เรื่อง</div>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function getHistoryContent() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const historyTitle = config.history_title || defaultConfig.history_title;
+      
+      return `
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">📜 ${historyTitle}</h2>
+            <p class="text-sm opacity-70">นิยายที่คุณอ่านล่าสุด</p>
+          </div>
+          <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="clearHistory()">
+            🗑️ ล้างประวัติ
+          </button>
+        </div>
+
+        <div class="space-y-4">
+          ${historyNovels.map(novel => `
+            <div class="novel-card p-5 rounded-xl shadow-lg flex items-center gap-4">
+              <div class="w-16 h-20 rounded-lg flex items-center justify-center text-3xl flex-shrink-0" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                ${novel.cover}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-bold mb-1">${novel.title}</h3>
+                <p class="text-sm opacity-70 mb-2">โดย ${novel.author}</p>
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="px-2 py-1 rounded-full text-xs" style="background-color: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                    ${novel.category}
+                  </span>
+                  <span class="opacity-70">📅 ${novel.readDate}</span>
+                  <span class="opacity-70">📖 ตอนที่ ${novel.chapters}</span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-2">
+                <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" onclick="startReading(${novel.id}, '${novel.title}')">
+                  อ่านอีกครั้ง
+                </button>
+                <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" onclick="removeFromHistory(${novel.id}, '${novel.title}')">
+                  ลบ
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="mt-8 text-center">
+          <button class="action-btn px-8 py-3 rounded-xl font-semibold" onclick="showToast('📜 กำลังโหลดประวัติเพิ่มเติม...')">
+            โหลดเพิ่มเติม
+          </button>
+        </div>
+      `;
+    }
+
+    function getStatsContent() {
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">📊 สถิติการอ่าน</h2>
+          <p class="text-sm opacity-70">ติดตามความคืบหน้าของคุณ</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          ${[
+            { icon: '📚', value: '127', label: 'อ่านทั้งหมด', color: '#8b5cf6' },
+            { icon: '⏱️', value: '245 ชม.', label: 'เวลาอ่านรวม', color: '#ec4899' },
+            { icon: '🔥', value: '7 วัน', label: 'สตรีคปัจจุบัน', color: '#f59e0b' },
+            { icon: '🎯', value: '89%', label: 'ทำเป้าหมายสำเร็จ', color: '#10b981' }
+          ].map(stat => `
+            <div class="stat-card text-center p-6 rounded-2xl shadow-lg">
+              <div class="text-5xl mb-3">${stat.icon}</div>
+              <div class="text-3xl font-bold mb-2" style="color: ${stat.color};">${stat.value}</div>
+              <div class="text-sm opacity-70">${stat.label}</div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📈 การอ่านรายสัปดาห์</h3>
+            <div class="space-y-4">
+              ${[
+                { day: 'จ', value: 45, max: 60 },
+                { day: 'อ', value: 52, max: 60 },
+                { day: 'พ', value: 38, max: 60 },
+                { day: 'พฤ', value: 60, max: 60 },
+                { day: 'ศ', value: 55, max: 60 },
+                { day: 'ส', value: 42, max: 60 },
+                { day: 'อา', value: 48, max: 60 }
+              ].map(data => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="font-semibold w-8">${data.day}</span>
+                    <span class="text-sm font-bold">${data.value} นาที</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="progress-bar h-3 rounded-full" style="width: ${(data.value / data.max * 100)}%; background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%);"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📂 หมวดที่อ่านมากที่สุด</h3>
+            <div class="space-y-4">
+              ${[
+                { category: '💕 โรแมนติก', count: 48, percent: 38 },
+                { category: '✨ แฟนตาซี', count: 35, percent: 28 },
+                { category: '🎓 วัยรุ่น', count: 24, percent: 19 },
+                { category: '🎭 ดราม่า', count: 15, percent: 12 },
+                { category: '🗺️ ผจญภัย', count: 5, percent: 4 }
+              ].map(cat => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold">${cat.category}</span>
+                    <span class="text-sm font-bold">${cat.count} เรื่อง</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="progress-bar h-3 rounded-full" style="width: ${cat.percent}%; background: linear-gradient(90deg, #8b5cf6 0%, #ec4899 100%);"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">🏆 ความสำเร็จ</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            ${[
+              { icon: '📖', title: 'นักอ่านตัวยง', desc: 'อ่านครบ 100 เรื่อง' },
+              { icon: '🔥', title: 'สตรีค 7 วัน', desc: 'อ่านติดต่อกัน 7 วัน' },
+              { icon: '⭐', title: 'นักวิจารณ์', desc: 'รีวิวครบ 50 เรื่อง' },
+              { icon: '💎', title: 'VIP Reader', desc: 'สมาชิกพรีเมียม' }
+            ].map(badge => `
+              <div class="text-center p-4 rounded-xl" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                <div class="text-4xl mb-2">${badge.icon}</div>
+                <div class="font-bold mb-1 text-sm">${badge.title}</div>
+                <div class="text-xs opacity-80">${badge.desc}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function continueReading(id, title) {
+      showToast(`📖 กำลังเปิด "${title}"...`);
+      setTimeout(() => {
+        showToast(`✨ เริ่มอ่านต่อแล้ว!`);
+      }, 1000);
+    }
+
+    function startReading(id, title) {
+      showToast(`📖 กำลังเปิด "${title}"...`);
+      setTimeout(() => {
+        showToast(`✨ เริ่มอ่านแล้ว!`);
+      }, 1000);
+    }
+
+    function addToCollection(id, title) {
+      showToast(`➕ เพิ่ม "${title}" ลงคอลเลกชั่นแล้ว!`);
+    }
+
+    function removeFromHistory(id, title) {
+      showToast(`🗑️ ลบ "${title}" จากประวัติแล้ว`);
+    }
+
+    function clearHistory() {
+      showToast('🗑️ กำลังล้างประวัติการอ่าน...');
+      setTimeout(() => {
+        showToast('✅ ล้างประวัติสำเร็จ!');
+      }, 1000);
+    }
+
+    function showToast(message) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        background-color: ${primaryColor};
+        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        max-width: 400px;
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = '@keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+      document.head.appendChild(style);
+      
+      document.getElementById('toast-container').appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.4s ease-in';
+        const styleOut = document.createElement('style');
+        styleOut.textContent = '@keyframes slideOut { to { transform: translateX(400px); opacity: 0; } }';
+        document.head.appendChild(styleOut);
+        
+        setTimeout(() => {
+          toast.remove();
+          style.remove();
+          styleOut.remove();
+        }, 400);
+      }, 3000);
+    }
+
+    function applyStyles() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      
+      document.getElementById('main-container').style.backgroundColor = bgColor;
+      
+      document.getElementById('header').style.backgroundColor = surfaceColor;
+      document.getElementById('header').style.color = textColor;
+      document.getElementById('header').style.borderColor = bgColor;
+      
+      document.getElementById('brand-name').textContent = config.brand_name || defaultConfig.brand_name;
+      document.getElementById('brand-name').style.fontSize = `${fontSize * 1.5}px`;
+      document.getElementById('brand-name').style.color = textColor;
+      
+      const userGreeting = config.user_greeting || defaultConfig.user_greeting;
+      document.getElementById('user-greeting-text').textContent = `${userGreeting}, นักอ่าน!`;
+      document.getElementById('user-greeting-text').style.fontSize = `${fontSize * 0.875}px`;
+      
+      document.getElementById('streak-indicator').style.backgroundColor = `${secondaryColor}20`;
+      document.getElementById('streak-indicator').style.color = secondaryColor;
+      
+      document.getElementById('profile-btn').style.backgroundColor = primaryColor;
+      document.getElementById('profile-btn').style.color = '#ffffff';
+      
+      document.getElementById('stats-bar').style.backgroundColor = surfaceColor;
+      document.getElementById('stats-bar').style.borderColor = bgColor;
+      
+      ['stat-1', 'stat-2', 'stat-3', 'stat-4'].forEach((id, index) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.backgroundColor = `${index % 2 === 0 ? primaryColor : secondaryColor}10`;
+        }
+      });
+      
+      document.getElementById('tabs-container').style.backgroundColor = surfaceColor;
+      document.getElementById('tabs-container').style.borderColor = bgColor;
+      
+      const tabs = document.querySelectorAll('.tab-item');
+      tabs.forEach(tab => {
+        tab.style.color = textColor;
+        if (tab.classList.contains('active')) {
+          tab.style.backgroundColor = primaryColor;
+          tab.style.color = '#ffffff';
+        } else {
+          tab.style.backgroundColor = `${primaryColor}20`;
+        }
+      });
+      
+      document.getElementById('main-content').style.backgroundColor = bgColor;
+      document.getElementById('main-content').style.color = textColor;
+      
+      const novelCards = document.querySelectorAll('.novel-card');
+      novelCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const actionBtns = document.querySelectorAll('.action-btn');
+      actionBtns.forEach(btn => {
+        if (btn.textContent.includes('ลบ') || btn.textContent.includes('🗑️')) {
+          btn.style.backgroundColor = '#ef4444';
+        } else if (btn.textContent.includes('💬') || btn.textContent.includes('📤') || btn.textContent.includes('➕')) {
+          btn.style.backgroundColor = secondaryColor;
+        } else {
+          btn.style.backgroundColor = primaryColor;
+        }
+        btn.style.color = '#ffffff';
+      });
+    }
+
+    async function onConfigChange(config) {
+      applyStyles();
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["brand_name", config.brand_name || defaultConfig.brand_name],
+        ["user_greeting", config.user_greeting || defaultConfig.user_greeting],
+        ["reading_title", config.reading_title || defaultConfig.reading_title],
+        ["collection_title", config.collection_title || defaultConfig.collection_title],
+        ["recommend_title", config.recommend_title || defaultConfig.recommend_title],
+        ["history_title", config.history_title || defaultConfig.history_title]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    loadContent('reading');
+    applyStyles();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a88649c74e67323',t:'MTc2NDgyMDc4Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

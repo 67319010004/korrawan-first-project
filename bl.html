@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายละเอียดนิยาย BL - StoryByte</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@400;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .book-cover {
+      transition: transform 0.3s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .book-cover:hover {
+      transform: scale(1.05);
+    }
+    
+    .tab-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .tab-btn.active {
+      border-bottom: 3px solid;
+    }
+    
+    .review-card {
+      transition: transform 0.3s ease;
+    }
+    
+    .review-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateX(400px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    .toast.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full min-h-full">
+  <main class="w-full"><!-- Navigation -->
+   <nav class="w-full py-5 px-6 shadow-md" id="nav">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+     <div class="flex items-center space-x-3">
+      <div class="text-3xl">
+       💕
+      </div><span class="text-3xl font-bold" id="site-title" style="font-family: 'Prompt', sans-serif;">StoryByte</span>
+     </div>
+     <div class="hidden md:flex items-center space-x-8"><a href="#" class="font-semibold hover:opacity-70 transition-opacity">← กลับหน้าหลัก</a>
+     </div>
+    </div>
+   </nav><!-- Toast Notification -->
+   <div id="toast" class="toast"><span id="toast-message"></span>
+   </div><!-- Book Details Section -->
+   <section class="w-full py-12 px-6" id="book-section">
+    <div class="max-w-7xl mx-auto">
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start"><!-- Book Cover -->
+      <div class="flex justify-center">
+       <div class="book-cover rounded-2xl overflow-hidden w-full max-w-md">
+        <div class="aspect-[3/4] gradient-bg flex flex-col items-center justify-center p-8">
+         <div class="text-9xl mb-6">
+          💙
+         </div>
+         <h2 class="text-white text-4xl font-bold text-center" style="font-family: 'Prompt', sans-serif;">นิยาย BL</h2>
+        </div>
+       </div>
+      </div><!-- Book Info -->
+      <div>
+       <h1 class="text-5xl font-bold mb-4" id="book-title" style="font-family: 'Prompt', sans-serif;">รักนี้ที่รอคอย</h1>
+       <p class="text-xl mb-6 opacity-70" id="author-name">โดย: สายรุ้ง</p><!-- Rating -->
+       <div class="flex items-center gap-2 mb-6">
+        <div class="flex text-2xl">
+         ⭐⭐⭐⭐⭐
+        </div><span class="text-lg font-semibold" id="rating-label">4.8/5.0</span> <span class="text-lg opacity-70">(1,234 รีวิว)</span>
+       </div><!-- Description -->
+       <p class="text-lg leading-relaxed mb-8 opacity-80" id="book-description">เรื่องราวความรักของสองหนุ่มที่ต้องเผชิญกับอุปสรรคมากมาย จากการเป็นเพื่อนสนิทมาตั้งแต่เด็ก ความรู้สึกที่ซ่อนเร้นอยู่ในใจจะถูกเปิดเผยได้อย่างไร เมื่อทั้งคู่ต้องแยกทางกันไปเรียนต่างเมือง แต่ชะตากรรมกลับพาให้พวกเขากลับมาพบกันอีกครั้งในมหาวิทยาลัย...</p><!-- Details Grid -->
+       <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="p-4 rounded-xl" id="detail-1">
+         <p class="font-semibold mb-1">📚 <span id="genre-label">หมวด: โรแมนติก, วัยรุ่น</span></p>
+        </div>
+        <div class="p-4 rounded-xl" id="detail-2">
+         <p class="font-semibold mb-1">📄 <span id="pages-label">หน้า: 350 หน้า</span></p>
+        </div>
+        <div class="p-4 rounded-xl" id="detail-3">
+         <p class="font-semibold mb-1">🌐 <span id="language-label">ภาษา: ไทย</span></p>
+        </div>
+        <div class="p-4 rounded-xl" id="detail-4">
+         <p class="font-semibold mb-1">📅 วันที่: 15 ม.ค. 2024</p>
+        </div>
+       </div><!-- Price -->
+       <div class="flex gap-6 items-center mb-8">
+        <div>
+         <p class="text-sm opacity-70 mb-1">ราคาเช่า (7 วัน)</p>
+         <p class="text-3xl font-bold" id="price-rent">49฿</p>
+        </div>
+        <div class="text-3xl opacity-30">
+         |
+        </div>
+        <div>
+         <p class="text-sm opacity-70 mb-1">ราคาซื้อ</p>
+         <p class="text-3xl font-bold" id="price-buy">299฿</p>
+        </div>
+       </div><!-- Action Buttons -->
+       <div class="flex flex-col sm:flex-row gap-4 mb-6"><button class="action-btn px-8 py-4 rounded-xl font-bold text-lg" id="btn-rent" onclick="handleRent()"> 📚 เช่าอ่าน 7 วัน </button> <button class="action-btn px-8 py-4 rounded-xl font-bold text-lg" id="btn-buy" onclick="handleBuy()"> ⭐ ซื้อเป็นของตัวเอง </button>
+       </div><button class="action-btn w-full sm:w-auto px-8 py-3 rounded-xl font-semibold" id="btn-preview" onclick="handlePreview()"> 👁️ อ่านตัวอย่าง </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- Tabs Section -->
+   <section class="w-full py-12 px-6" id="tabs-section">
+    <div class="max-w-7xl mx-auto"><!-- Tab Headers -->
+     <div class="flex gap-8 mb-8 border-b" id="tab-headers"><button class="tab-btn active text-xl font-bold pb-4" id="tab-synopsis" onclick="switchTab('synopsis')"> 📖 เรื่องย่อ </button> <button class="tab-btn text-xl font-bold pb-4" id="tab-details" onclick="switchTab('details')"> ℹ️ รายละเอียด </button> <button class="tab-btn text-xl font-bold pb-4" id="tab-reviews" onclick="switchTab('reviews')"> 💬 รีวิว (1,234) </button>
+     </div><!-- Tab Content: Synopsis -->
+     <div id="content-synopsis" class="tab-content">
+      <div class="p-8 rounded-2xl" id="synopsis-card">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">เรื่องย่อ</h3>
+       <div class="space-y-4 text-lg leading-relaxed opacity-80">
+        <p>ทิน และ อาร์ม เพื่อนสนิทกันมาตั้งแต่ประถม ทิน เป็นเด็กเรียนเก่ง ขยัน และเป็นที่พึ่งของอาร์มเสมอมา ส่วนอาร์มเป็นเด็กซุกซน ขี้เล่น แต่ก็มีหัวใจที่อบอุ่น พวกเขาทำทุกอย่างด้วยกัน ตั้งแต่ไปโรงเรียน ทำการบ้าน เล่นกีฬา จนกลายเป็นส่วนหนึ่งของชีวิตกันและกัน</p>
+        <p>แต่เมื่อจบมัธยมปลาย ทิน ได้รับทุนการศึกษาไปเรียนต่อกรุงเทพฯ ส่วนอาร์มต้องอยู่เรียนที่จังหวัด การแยกทางครั้งนี้ทำให้ทั้งคู่รู้สึกว่ามีบางอย่างขาดหายไป และเริ่มตระหนักถึงความรู้สึกที่แท้จริงที่มีต่อกัน</p>
+        <p>สี่ปีผ่านไป เมื่อทั้งคู่กลับมาพบกันอีกครั้งในงานปกเกล้า พวกเขาจะสามารถเปิดใจและยอมรับความรู้สึกที่มีต่อกันได้หรือไม่? และความรักของพวกเขาจะสามารถเอาชนะอุปสรรคทั้งหมดได้หรือเปล่า...</p>
+       </div>
+      </div>
+     </div><!-- Tab Content: Details -->
+     <div id="content-details" class="tab-content" style="display: none;">
+      <div class="p-8 rounded-2xl" id="details-card">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">รายละเอียดเพิ่มเติม</h3>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+         <h4 class="font-bold text-lg mb-3">ข้อมูลหนังสือ</h4>
+         <ul class="space-y-2 opacity-80">
+          <li>📚 <strong>ประเภท:</strong> นิยาย BL (Boys Love)</li>
+          <li>📖 <strong>จำนวนหน้า:</strong> 350 หน้า</li>
+          <li>🌐 <strong>ภาษา:</strong> ไทย</li>
+          <li>📅 <strong>วันที่เผยแพร่:</strong> 15 มกราคม 2024</li>
+          <li>🏷️ <strong>ISBN:</strong> 978-616-xxxx-xx-x</li>
+          <li>📦 <strong>สำนักพิมพ์:</strong> StoryByte Publishing</li>
+         </ul>
+        </div>
+        <div>
+         <h4 class="font-bold text-lg mb-3">หมวดหมู่และแท็ก</h4>
+         <div class="flex flex-wrap gap-2 mb-4"><span class="px-4 py-2 rounded-full text-sm font-semibold">โรแมนติก</span> <span class="px-4 py-2 rounded-full text-sm font-semibold">วัยรุ่น</span> <span class="px-4 py-2 rounded-full text-sm font-semibold">เพื่อนรักกลายเป็นแฟน</span> <span class="px-4 py-2 rounded-full text-sm font-semibold">รักแรก</span> <span class="px-4 py-2 rounded-full text-sm font-semibold">มหาลัย</span>
+         </div>
+         <h4 class="font-bold text-lg mb-3 mt-6">เนื้อหาเหมาะสำหรับ</h4>
+         <ul class="space-y-2 opacity-80">
+          <li>✅ อายุ 16 ปีขึ้นไป</li>
+          <li>✅ เนื้อหาสะอาด ไม่มี NC</li>
+          <li>✅ โฟกัสที่พัฒนาการของตัวละคร</li>
+          <li>✅ มีฉากโรแมนติกอ่อนๆ</li>
+         </ul>
+        </div>
+       </div>
+      </div>
+     </div><!-- Tab Content: Reviews -->
+     <div id="content-reviews" class="tab-content" style="display: none;">
+      <div class="mb-8">
+       <h3 class="text-2xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">รีวิวจากผู้อ่าน</h3><!-- Overall Rating -->
+       <div class="p-6 rounded-2xl mb-6" id="rating-summary">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+         <div class="text-center">
+          <div class="text-6xl font-bold mb-2">
+           4.8
+          </div>
+          <div class="flex text-3xl mb-2">
+           ⭐⭐⭐⭐⭐
+          </div>
+          <p class="opacity-70">จาก 1,234 รีวิว</p>
+         </div>
+         <div class="flex-1 w-full">
+          <div class="space-y-2">
+           <div class="flex items-center gap-3"><span class="w-16">5 ⭐</span>
+            <div class="flex-1 h-3 rounded-full overflow-hidden" id="star5-bg">
+             <div class="h-full rounded-full" id="star5-fill" style="width: 75%"></div>
+            </div><span class="w-12 text-right">920</span>
+           </div>
+           <div class="flex items-center gap-3"><span class="w-16">4 ⭐</span>
+            <div class="flex-1 h-3 rounded-full overflow-hidden" id="star4-bg">
+             <div class="h-full rounded-full" id="star4-fill" style="width: 15%"></div>
+            </div><span class="w-12 text-right">185</span>
+           </div>
+           <div class="flex items-center gap-3"><span class="w-16">3 ⭐</span>
+            <div class="flex-1 h-3 rounded-full overflow-hidden" id="star3-bg">
+             <div class="h-full rounded-full" id="star3-fill" style="width: 7%"></div>
+            </div><span class="w-12 text-right">86</span>
+           </div>
+           <div class="flex items-center gap-3"><span class="w-16">2 ⭐</span>
+            <div class="flex-1 h-3 rounded-full overflow-hidden" id="star2-bg">
+             <div class="h-full rounded-full" id="star2-fill" style="width: 2%"></div>
+            </div><span class="w-12 text-right">25</span>
+           </div>
+           <div class="flex items-center gap-3"><span class="w-16">1 ⭐</span>
+            <div class="flex-1 h-3 rounded-full overflow-hidden" id="star1-bg">
+             <div class="h-full rounded-full" id="star1-fill" style="width: 1%"></div>
+            </div><span class="w-12 text-right">18</span>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div><!-- Individual Reviews -->
+       <div class="space-y-6"><!-- Review 1 -->
+        <div class="review-card p-6 rounded-2xl" id="review-1">
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+           👤
+          </div>
+          <div class="flex-1">
+           <div class="flex items-center justify-between mb-2">
+            <h4 class="font-bold text-lg">น้องแมว</h4><span class="text-sm opacity-70">3 วันที่แล้ว</span>
+           </div>
+           <div class="flex text-xl mb-3">
+            ⭐⭐⭐⭐⭐
+           </div>
+           <p class="leading-relaxed opacity-80">อ่านแล้วตื้นตันมากค่ะ เรื่องราวน่ารัก ตัวละครมีมิติ ไม่รีบเร่งเกินไป การพัฒนาความสัมพันธ์ของทั้งคู่ค่อยเป็นค่อยไป อ่านแล้วรู้สึกอบอุ่น และฟินมากๆ แนะนำเลยค่ะ! 💕</p>
+           <div class="flex gap-4 mt-4"><button class="text-sm opacity-70 hover:opacity-100 transition-opacity">👍 มีประโยชน์ (234)</button>
+           </div>
+          </div>
+         </div>
+        </div><!-- Review 2 -->
+        <div class="review-card p-6 rounded-2xl" id="review-2">
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+           👤
+          </div>
+          <div class="flex-1">
+           <div class="flex items-center justify-between mb-2">
+            <h4 class="font-bold text-lg">รักนิยาย</h4><span class="text-sm opacity-70">1 สัปดาห์ที่แล้ว</span>
+           </div>
+           <div class="flex text-xl mb-3">
+            ⭐⭐⭐⭐⭐
+           </div>
+           <p class="leading-relaxed opacity-80">เนื้อหาดีมาก ภาษาเขียนสวย อ่านง่าย ฉากต่างๆ สามารถจินตนาการได้ชัดเจน โดยเฉพาะฉากที่ทั้งคู่กลับมาเจอกันที่มหาลัยนั้น น้ำตาซึมเลยค่ะ 😭💙</p>
+           <div class="flex gap-4 mt-4"><button class="text-sm opacity-70 hover:opacity-100 transition-opacity">👍 มีประโยชน์ (189)</button>
+           </div>
+          </div>
+         </div>
+        </div><!-- Review 3 -->
+        <div class="review-card p-6 rounded-2xl" id="review-3">
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+           👤
+          </div>
+          <div class="flex-1">
+           <div class="flex items-center justify-between mb-2">
+            <h4 class="font-bold text-lg">BL Lover</h4><span class="text-sm opacity-70">2 สัปดาห์ที่แล้ว</span>
+           </div>
+           <div class="flex text-xl mb-3">
+            ⭐⭐⭐⭐
+           </div>
+           <p class="leading-relaxed opacity-80">โดยรวมถือว่าดีมากค่ะ แต่ก็อยากให้มีเนื้อหามากกว่านี้หน่อย รู้สึกว่าจบเร็วไปนิด อยากอ่านชีวิตหลังจบของทั้งคู่ด้วย หวังว่าจะมีภาคต่อนะคะ! ⭐</p>
+           <div class="flex gap-4 mt-4"><button class="text-sm opacity-70 hover:opacity-100 transition-opacity">👍 มีประโยชน์ (145)</button>
+           </div>
+          </div>
+         </div>
+        </div><!-- Review 4 -->
+        <div class="review-card p-6 rounded-2xl" id="review-4">
+         <div class="flex items-start gap-4">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl">
+           👤
+          </div>
+          <div class="flex-1">
+           <div class="flex items-center justify-between mb-2">
+            <h4 class="font-bold text-lg">อ่านหนังสือทุกวัน</h4><span class="text-sm opacity-70">3 สัปดาห์ที่แล้ว</span>
+           </div>
+           <div class="flex text-xl mb-3">
+            ⭐⭐⭐⭐⭐
+           </div>
+           <p class="leading-relaxed opacity-80">คุ้มค่ามากๆ ค่ะ ทั้งเช่าและซื้อ เรื่องราวสะอาด เหมาะกับคนที่ชอบนิยายโรแมนติกแบบหวานๆ อบอุ่น ไม่มีความรุนแรง อ่านแล้วมีความสุข 💖 แนะนำให้เพื่อนๆ อ่านแล้วหลายคนค่ะ</p>
+           <div class="flex gap-4 mt-4"><button class="text-sm opacity-70 hover:opacity-100 transition-opacity">👍 มีประโยชน์ (298)</button>
+           </div>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="w-full py-8 px-6 mt-12" id="footer">
+    <div class="max-w-7xl mx-auto text-center">
+     <p id="footer-text">© 2024 StoryByte. ทุกเรื่องราวเริ่มต้นที่นี่ 💕</p>
+    </div>
+   </footer>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#fff5f7",
+      surface_color: "#ffffff",
+      text_color: "#2d2d2d",
+      primary_action_color: "#ff6b9d",
+      secondary_action_color: "#c06c84",
+      font_family: "Sarabun",
+      font_size: 16,
+      site_title: "StoryByte",
+      book_title: "รักนี้ที่รอคอย",
+      author_name: "โดย: สายรุ้ง",
+      book_description: "เรื่องราวความรักของสองหนุ่มที่ต้องเผชิญกับอุปสรรคมากมาย จากการเป็นเพื่อนสนิทมาตั้งแต่เด็ก ความรู้สึกที่ซ่อนเร้นอยู่ในใจจะถูกเปิดเผยได้อย่างไร เมื่อทั้งคู่ต้องแยกทางกันไปเรียนต่างเมือง แต่ชะตากรรมกลับพาให้พวกเขากลับมาพบกันอีกครั้งในมหาวิทยาลัย...",
+      price_rent: "49฿",
+      price_buy: "299฿",
+      btn_rent: "📚 เช่าอ่าน 7 วัน",
+      btn_buy: "⭐ ซื้อเป็นของตัวเอง",
+      btn_preview: "👁️ อ่านตัวอย่าง",
+      genre_label: "หมวด: โรแมนติก, วัยรุ่น",
+      pages_label: "หน้า: 350 หน้า",
+      language_label: "ภาษา: ไทย",
+      rating_label: "4.8/5.0",
+      footer_text: "© 2024 StoryByte. ทุกเรื่องราวเริ่มต้นที่นี่ 💕"
+    };
+
+    // Tab switching function
+    function switchTab(tabName) {
+      // Hide all content
+      document.getElementById('content-synopsis').style.display = 'none';
+      document.getElementById('content-details').style.display = 'none';
+      document.getElementById('content-reviews').style.display = 'none';
+      
+      // Remove active class from all tabs
+      document.getElementById('tab-synopsis').classList.remove('active');
+      document.getElementById('tab-details').classList.remove('active');
+      document.getElementById('tab-reviews').classList.remove('active');
+      
+      // Show selected content and activate tab
+      document.getElementById('content-' + tabName).style.display = 'block';
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    // Toast notification function
+    function showToast(message, bgColor) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = message;
+      toast.style.backgroundColor = bgColor;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Handle rent action
+    function handleRent() {
+      const primaryColor = window.elementSdk ? 
+        (window.elementSdk.config.primary_action_color || defaultConfig.primary_action_color) : 
+        defaultConfig.primary_action_color;
+      showToast('✅ เพิ่มลงตะกร้าเช่าเรียบร้อย!', primaryColor);
+    }
+
+    // Handle buy action
+    function handleBuy() {
+      const primaryColor = window.elementSdk ? 
+        (window.elementSdk.config.primary_action_color || defaultConfig.primary_action_color) : 
+        defaultConfig.primary_action_color;
+      showToast('✅ เพิ่มลงตะกร้าซื้อเรียบร้อย!', primaryColor);
+    }
+
+    // Handle preview action
+    function handlePreview() {
+      const secondaryColor = window.elementSdk ? 
+        (window.elementSdk.config.secondary_action_color || defaultConfig.secondary_action_color) : 
+        defaultConfig.secondary_action_color;
+      showToast('📖 กำลังเปิดหน้าอ่านตัวอย่าง...', secondaryColor);
+    }
+
+    async function onConfigChange(config) {
+      const body = document.body;
+      const nav = document.getElementById('nav');
+      const bookSection = document.getElementById('book-section');
+      const tabsSection = document.getElementById('tabs-section');
+      const footer = document.getElementById('footer');
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      body.style.backgroundColor = bgColor;
+      body.style.color = textColor;
+      body.style.fontFamily = `${fontFamily}, sans-serif`;
+      
+      nav.style.backgroundColor = surfaceColor;
+      nav.style.color = textColor;
+      
+      bookSection.style.backgroundColor = bgColor;
+      tabsSection.style.backgroundColor = surfaceColor;
+      footer.style.backgroundColor = textColor;
+      footer.style.color = surfaceColor;
+      
+      // Detail cards
+      const detailCards = [
+        document.getElementById('detail-1'),
+        document.getElementById('detail-2'),
+        document.getElementById('detail-3'),
+        document.getElementById('detail-4')
+      ];
+      detailCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+        card.style.border = `2px solid ${bgColor}`;
+      });
+      
+      // Content cards
+      document.getElementById('synopsis-card').style.backgroundColor = bgColor;
+      document.getElementById('synopsis-card').style.color = textColor;
+      document.getElementById('details-card').style.backgroundColor = bgColor;
+      document.getElementById('details-card').style.color = textColor;
+      document.getElementById('rating-summary').style.backgroundColor = bgColor;
+      document.getElementById('rating-summary').style.color = textColor;
+      
+      // Review cards
+      const reviewCards = document.querySelectorAll('.review-card');
+      reviewCards.forEach(card => {
+        card.style.backgroundColor = bgColor;
+        card.style.color = textColor;
+      });
+      
+      // Tags in details
+      const tags = document.querySelectorAll('.tab-content span.px-4');
+      tags.forEach(tag => {
+        tag.style.backgroundColor = primaryColor;
+        tag.style.color = '#ffffff';
+      });
+      
+      // Tab buttons
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        btn.style.color = textColor;
+        if (btn.classList.contains('active')) {
+          btn.style.borderColor = primaryColor;
+        }
+      });
+      
+      document.getElementById('tab-headers').style.borderColor = bgColor;
+      
+      // Action buttons
+      document.getElementById('btn-rent').style.backgroundColor = primaryColor;
+      document.getElementById('btn-rent').style.color = '#ffffff';
+      
+      document.getElementById('btn-buy').style.backgroundColor = surfaceColor;
+      document.getElementById('btn-buy').style.color = primaryColor;
+      document.getElementById('btn-buy').style.border = `3px solid ${primaryColor}`;
+      
+      document.getElementById('btn-preview').style.backgroundColor = secondaryColor;
+      document.getElementById('btn-preview').style.color = '#ffffff';
+      
+      // Rating bars
+      const starBgs = ['star5-bg', 'star4-bg', 'star3-bg', 'star2-bg', 'star1-bg'];
+      const starFills = ['star5-fill', 'star4-fill', 'star3-fill', 'star2-fill', 'star1-fill'];
+      
+      starBgs.forEach(id => {
+        const element = document.getElementById(id);
+        element.style.backgroundColor = bgColor;
+      });
+      
+      starFills.forEach(id => {
+        const element = document.getElementById(id);
+        element.style.backgroundColor = primaryColor;
+      });
+      
+      // Text content
+      document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+      document.getElementById('site-title').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('site-title').style.color = textColor;
+      
+      document.getElementById('book-title').textContent = config.book_title || defaultConfig.book_title;
+      document.getElementById('book-title').style.fontSize = `${fontSize * 3}px`;
+      document.getElementById('book-title').style.color = textColor;
+      
+      document.getElementById('author-name').textContent = config.author_name || defaultConfig.author_name;
+      document.getElementById('author-name').style.fontSize = `${fontSize * 1.25}px`;
+      
+      document.getElementById('book-description').textContent = config.book_description || defaultConfig.book_description;
+      document.getElementById('book-description').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('price-rent').textContent = config.price_rent || defaultConfig.price_rent;
+      document.getElementById('price-rent').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('price-rent').style.color = textColor;
+      
+      document.getElementById('price-buy').textContent = config.price_buy || defaultConfig.price_buy;
+      document.getElementById('price-buy').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('price-buy').style.color = textColor;
+      
+      document.getElementById('btn-rent').textContent = config.btn_rent || defaultConfig.btn_rent;
+      document.getElementById('btn-rent').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('btn-buy').textContent = config.btn_buy || defaultConfig.btn_buy;
+      document.getElementById('btn-buy').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('btn-preview').textContent = config.btn_preview || defaultConfig.btn_preview;
+      document.getElementById('btn-preview').style.fontSize = `${fontSize}px`;
+      
+      document.getElementById('genre-label').textContent = config.genre_label || defaultConfig.genre_label;
+      document.getElementById('pages-label').textContent = config.pages_label || defaultConfig.pages_label;
+      document.getElementById('language-label').textContent = config.language_label || defaultConfig.language_label;
+      document.getElementById('rating-label').textContent = config.rating_label || defaultConfig.rating_label;
+      
+      document.getElementById('footer-text').textContent = config.footer_text || defaultConfig.footer_text;
+      document.getElementById('footer-text').style.fontSize = `${fontSize}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["site_title", config.site_title || defaultConfig.site_title],
+        ["book_title", config.book_title || defaultConfig.book_title],
+        ["author_name", config.author_name || defaultConfig.author_name],
+        ["book_description", config.book_description || defaultConfig.book_description],
+        ["price_rent", config.price_rent || defaultConfig.price_rent],
+        ["price_buy", config.price_buy || defaultConfig.price_buy],
+        ["btn_rent", config.btn_rent || defaultConfig.btn_rent],
+        ["btn_buy", config.btn_buy || defaultConfig.btn_buy],
+        ["btn_preview", config.btn_preview || defaultConfig.btn_preview],
+        ["genre_label", config.genre_label || defaultConfig.genre_label],
+        ["pages_label", config.pages_label || defaultConfig.pages_label],
+        ["language_label", config.language_label || defaultConfig.language_label],
+        ["rating_label", config.rating_label || defaultConfig.rating_label],
+        ["footer_text", config.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a87f9bd83708957',t:'MTc2NDgxNjQwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

@@ -1,0 +1,1083 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แดชบอร์ดผู้จัดการ - StoryByte</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@400;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .content-card {
+      transition: all 0.3s ease;
+    }
+    
+    .content-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tab-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+    
+    .tab-item.active {
+      transform: scale(1.05);
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .progress-bar {
+      transition: width 0.5s ease;
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      max-width: 600px;
+      width: 90%;
+      max-height: 90%;
+      overflow-y: auto;
+      border-radius: 20px;
+      padding: 32px;
+      animation: slideUp 0.3s ease;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .review-textarea {
+      transition: all 0.3s ease;
+    }
+    
+    .review-textarea:focus {
+      transform: scale(1.01);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full h-full">
+  <div class="w-full h-full flex flex-col" id="main-container"><!-- Header -->
+   <header class="p-6 border-b flex items-center justify-between" id="header">
+    <div class="flex items-center gap-4">
+     <div class="flex items-center gap-3"><span class="text-4xl">📋</span>
+      <div>
+       <h1 class="text-2xl font-bold" id="brand-name" style="font-family: 'Prompt', sans-serif;">StoryByte Manager</h1>
+       <p class="text-sm opacity-70" id="welcome-message">จัดการคอนเทนต์อย่างมืออาชีพ</p>
+      </div>
+     </div>
+    </div>
+    <div class="flex items-center gap-4">
+     <div class="flex items-center gap-2 px-4 py-2 rounded-lg" id="status-indicator"><span class="text-2xl">💼</span>
+      <div>
+       <div class="text-xs opacity-70">
+        สถานะ
+       </div>
+       <div class="text-sm font-bold">
+        ผู้จัดการ
+       </div>
+      </div>
+     </div><button class="action-btn px-6 py-3 rounded-xl font-semibold" id="profile-btn" onclick="showToast('👤 โปรไฟล์')"> 👤 โปรไฟล์ </button>
+    </div>
+   </header><!-- Main Content -->
+   <main class="flex-1 overflow-y-auto" id="main-content"><!-- Stats Bar -->
+    <div class="p-6 border-b" id="stats-bar">
+     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="text-center p-4 rounded-xl" id="stat-1">
+       <div class="text-3xl mb-2">
+        ⏳
+       </div>
+       <div class="text-2xl font-bold" id="pending-count">
+        24
+       </div>
+       <div class="text-sm opacity-70" id="pending-label">
+        รออนุมัติ
+       </div>
+      </div>
+      <div class="text-center p-4 rounded-xl" id="stat-2">
+       <div class="text-3xl mb-2">
+        ✅
+       </div>
+       <div class="text-2xl font-bold">
+        156
+       </div>
+       <div class="text-sm opacity-70">
+        อนุมัติวันนี้
+       </div>
+      </div>
+      <div class="text-center p-4 rounded-xl" id="stat-3">
+       <div class="text-3xl mb-2">
+        📚
+       </div>
+       <div class="text-2xl font-bold">
+        3,847
+       </div>
+       <div class="text-sm opacity-70">
+        คอนเทนต์ทั้งหมด
+       </div>
+      </div>
+      <div class="text-center p-4 rounded-xl" id="stat-4">
+       <div class="text-3xl mb-2">
+        🔥
+       </div>
+       <div class="text-2xl font-bold">
+        892
+       </div>
+       <div class="text-sm opacity-70">
+        ยอดนิยมวันนี้
+       </div>
+      </div>
+     </div>
+    </div><!-- Tabs -->
+    <div class="p-6 border-b" id="tabs-container">
+     <div class="flex gap-3 overflow-x-auto">
+      <div class="tab-item active" id="tab-pending" onclick="switchTab('pending')">
+       ⏳ รออนุมัติ (24)
+      </div>
+      <div class="tab-item" id="tab-approved" onclick="switchTab('approved')">
+       ✅ อนุมัติแล้ว (156)
+      </div>
+      <div class="tab-item" id="tab-popular" onclick="switchTab('popular')">
+       🔥 ยอดนิยม (50)
+      </div>
+      <div class="tab-item" id="tab-categories" onclick="switchTab('categories')">
+       📂 หมวดหมู่ (12)
+      </div>
+      <div class="tab-item" id="tab-reports" onclick="switchTab('reports')">
+       📊 รายงาน
+      </div>
+     </div>
+    </div><!-- Content Area -->
+    <div class="p-6" id="content-area"><!-- Dynamic content will load here -->
+    </div>
+   </main>
+  </div><!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 2000;"></div><!-- Modal Container -->
+  <div id="modal-container"></div>
+  <script>
+    const defaultConfig = {
+      background_color: "#f1f5f9",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#3b82f6",
+      secondary_action_color: "#10b981",
+      font_family: "Sarabun",
+      font_size: 16,
+      brand_name: "StoryByte Manager",
+      dashboard_title: "แดชบอร์ดผู้จัดการ",
+      welcome_message: "จัดการคอนเทนต์อย่างมืออาชีพ",
+      pending_title: "รออนุมัติ"
+    };
+
+    let currentTab = 'pending';
+    
+    const pendingNovels = [
+      { 
+        id: 1, 
+        title: 'ดอกไม้ในสายลม', 
+        author: 'ดาวใจ สวยงาม', 
+        category: 'โรแมนติก', 
+        submitted: '2 ชม. ที่แล้ว',
+        chapters: 15,
+        words: 45000,
+        cover: '🌸',
+        excerpt: 'เรื่องราวความรักที่เริ่มต้นจากการบังเอิญพบกัน ท่ามกลางสวนดอกไม้ที่งดงาม...'
+      },
+      { 
+        id: 2, 
+        title: 'ใจเธอใจฉัน', 
+        author: 'จันทร์เพ็ญ ใสสะอาด', 
+        category: 'แฟนตาซี', 
+        submitted: '5 ชม. ที่แล้ว',
+        chapters: 23,
+        words: 68000,
+        cover: '💫',
+        excerpt: 'ในโลกที่มีเวทมนตร์ เธอคือเหมือนดวงดาวที่ส่องสว่างนำทางชีวิตฉัน...'
+      },
+      { 
+        id: 3, 
+        title: 'รักที่ปลายฝัน', 
+        author: 'ดอกไม้ หอมหวน', 
+        category: 'วัยรุ่น', 
+        submitted: '1 วัน ที่แล้ว',
+        chapters: 18,
+        words: 52000,
+        cover: '🌟',
+        excerpt: 'ความรักในวัยเรียนที่เริ่มต้นจากการเป็นเพื่อนร่วมชั้น แล้วค่อยๆ พัฒนาเป็น...'
+      },
+      { 
+        id: 4, 
+        title: 'หัวใจไม่หยุดรัก', 
+        author: 'ดาวดิน สดใส', 
+        category: 'ดราม่า', 
+        submitted: '1 วัน ที่แล้ว',
+        chapters: 12,
+        words: 38000,
+        cover: '💗',
+        excerpt: 'เธอคือคนที่ทำให้ฉันเข้าใจความหมายของคำว่ารัก แม้จะมีอุปสรรคมากมาย...'
+      }
+    ];
+
+    const approvedNovels = [
+      { id: 5, title: 'เธอคือแสงในใจฉัน', author: 'ดาวใจ', category: 'โรแมนติก', approved: 'วันนี้', reads: 12500, rating: 4.8, cover: '🌟' },
+      { id: 6, title: 'ฝันที่เป็นจริง', author: 'จันทร์เพ็ญ', category: 'แฟนตาซี', approved: 'วันนี้', reads: 8900, rating: 4.6, cover: '🌙' },
+      { id: 7, title: 'รักในมหาวิทยาลัย', author: 'ดอกไม้', category: 'วัยรุ่น', approved: 'เมื่อวาน', reads: 15600, rating: 4.7, cover: '🎓' },
+      { id: 8, title: 'ทุกวันที่มีเธอ', author: 'ดาวดิน', category: 'โรแมนติก', approved: 'เมื่อวาน', reads: 23400, rating: 4.9, cover: '💕' }
+    ];
+
+    const popularNovels = [
+      { id: 9, title: 'ใจเธอใจฉัน', rank: 1, reads: 234000, growth: '+25%', rating: 4.9, cover: '🌸', trend: '📈' },
+      { id: 10, title: 'รักในมหาวิทยาลัย', rank: 2, reads: 156000, growth: '+18%', rating: 4.7, cover: '🎓', trend: '📈' },
+      { id: 11, title: 'เธอคือแสงในใจฉัน', rank: 3, reads: 125000, growth: '+12%', rating: 4.8, cover: '🌟', trend: '📊' },
+      { id: 12, title: 'รักที่ปลายฝัน', rank: 4, reads: 89000, growth: '+8%', rating: 4.6, cover: '🌙', trend: '📊' }
+    ];
+
+    const categories = [
+      { id: 1, name: 'โรแมนติก', icon: '💕', novels: 1245, pending: 8, approved: 45, color: '#ec4899' },
+      { id: 2, name: 'แฟนตาซี', icon: '✨', novels: 892, pending: 5, approved: 32, color: '#8b5cf6' },
+      { id: 3, name: 'วัยรุ่น', icon: '🎓', novels: 678, pending: 6, approved: 28, color: '#f59e0b' },
+      { id: 4, name: 'ดราม่า', icon: '🎭', novels: 456, pending: 3, approved: 22, color: '#10b981' },
+      { id: 5, name: 'ผจญภัย', icon: '🗺️', novels: 234, pending: 2, approved: 15, color: '#06b6d4' },
+      { id: 6, name: 'ลึกลับ', icon: '🔍', novels: 178, pending: 1, approved: 14, color: '#6366f1' }
+    ];
+
+    function switchTab(tab) {
+      currentTab = tab;
+      
+      const tabs = document.querySelectorAll('.tab-item');
+      tabs.forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+      
+      loadContent(tab);
+      applyStyles();
+    }
+
+    function loadContent(tab) {
+      const content = document.getElementById('content-area');
+      
+      switch(tab) {
+        case 'pending':
+          content.innerHTML = getPendingContent();
+          break;
+        case 'approved':
+          content.innerHTML = getApprovedContent();
+          break;
+        case 'popular':
+          content.innerHTML = getPopularContent();
+          break;
+        case 'categories':
+          content.innerHTML = getCategoriesContent();
+          break;
+        case 'reports':
+          content.innerHTML = getReportsContent();
+          break;
+      }
+      
+      content.classList.add('fade-in');
+    }
+
+    function getPendingContent() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const pendingTitle = config.pending_title || defaultConfig.pending_title;
+      
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">⏳ ${pendingTitle} (${pendingNovels.length})</h2>
+          <p class="text-sm opacity-70 mt-2">ตรวจสอบและอนุมัติเนื้อหาใหม่</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+          ${pendingNovels.map(novel => `
+            <div class="content-card p-6 rounded-2xl shadow-lg">
+              <div class="flex gap-6">
+                <div class="w-32 h-44 rounded-xl flex items-center justify-center text-6xl flex-shrink-0" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-start justify-between gap-4 mb-3">
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-xl font-bold mb-2">${novel.title}</h3>
+                      <p class="text-sm opacity-70 mb-2">โดย ${novel.author}</p>
+                      <div class="flex items-center gap-3 mb-3 flex-wrap">
+                        <span class="status-badge" style="background-color: #3b82f620; color: #3b82f6;">${novel.category}</span>
+                        <span class="text-sm opacity-70">⏰ ส่งเมื่อ ${novel.submitted}</span>
+                      </div>
+                    </div>
+                    <button class="action-btn px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" onclick="quickApprove(${novel.id}, '${novel.title}')">
+                      ⚡ อนุมัติด่วน
+                    </button>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    <div>
+                      <span class="opacity-70">ตอน:</span>
+                      <span class="font-semibold ml-2">${novel.chapters} ตอน</span>
+                    </div>
+                    <div>
+                      <span class="opacity-70">จำนวนคำ:</span>
+                      <span class="font-semibold ml-2">${novel.words.toLocaleString()} คำ</span>
+                    </div>
+                  </div>
+                  
+                  <p class="text-sm opacity-80 mb-4 line-clamp-2">${novel.excerpt}</p>
+                  
+                  <div class="flex gap-3 flex-wrap">
+                    <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="reviewNovel(${novel.id}, '${novel.title}', '${novel.author}')">
+                      📖 อ่านและตรวจสอบ
+                    </button>
+                    <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showApproveModal(${novel.id}, '${novel.title}')">
+                      ✅ อนุมัติ
+                    </button>
+                    <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showRejectModal(${novel.id}, '${novel.title}')">
+                      ❌ ปฏิเสธ
+                    </button>
+                    <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showFeedbackModal(${novel.id}, '${novel.title}')">
+                      💬 ขอแก้ไข
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function getApprovedContent() {
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">✅ อนุมัติแล้ว (${approvedNovels.length})</h2>
+          <p class="text-sm opacity-70 mt-2">คอนเทนต์ที่ผ่านการอนุมัติแล้ว</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ${approvedNovels.map(novel => `
+            <div class="content-card p-6 rounded-2xl shadow-lg">
+              <div class="flex gap-4 mb-4">
+                <div class="w-20 h-28 rounded-lg flex items-center justify-center text-4xl flex-shrink-0" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-lg font-bold mb-1">${novel.title}</h3>
+                  <p class="text-sm opacity-70 mb-2">โดย ${novel.author}</p>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="status-badge text-xs" style="background-color: #10b98120; color: #10b981;">✅ ${novel.approved}</span>
+                    <span class="status-badge text-xs" style="background-color: #3b82f620; color: #3b82f6;">${novel.category}</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4 mb-4 text-sm">
+                <div>
+                  <div class="opacity-70 text-xs mb-1">ยอดอ่าน</div>
+                  <div class="font-bold text-lg">${novel.reads.toLocaleString()}</div>
+                </div>
+                <div>
+                  <div class="opacity-70 text-xs mb-1">เรตติ้ง</div>
+                  <div class="font-bold text-lg">⭐ ${novel.rating}</div>
+                </div>
+              </div>
+              
+              <div class="flex gap-2">
+                <button class="action-btn flex-1 py-2 rounded-lg text-sm font-semibold" onclick="showToast('📊 ดูสถิติของ ${novel.title}')">
+                  📊 สถิติ
+                </button>
+                <button class="action-btn flex-1 py-2 rounded-lg text-sm font-semibold" onclick="showToast('✏️ แก้ไข ${novel.title}')">
+                  ✏️ แก้ไข
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function getPopularContent() {
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">🔥 ยอดนิยม (${popularNovels.length})</h2>
+          <p class="text-sm opacity-70 mt-2">คอนเทนต์ที่ได้รับความนิยมสูงสุด</p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+          ${popularNovels.map(novel => `
+            <div class="content-card p-6 rounded-2xl shadow-lg">
+              <div class="flex gap-6 items-center">
+                <div class="text-center">
+                  <div class="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold mb-2" style="background: linear-gradient(135deg, ${novel.rank === 1 ? '#fbbf24' : novel.rank === 2 ? '#94a3b8' : '#cd7f32'} 0%, ${novel.rank === 1 ? '#f59e0b' : novel.rank === 2 ? '#64748b' : '#a0522d'} 100%); color: white;">
+                    #${novel.rank}
+                  </div>
+                  <div class="text-2xl">${novel.cover}</div>
+                </div>
+                
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-2">${novel.title}</h3>
+                  <div class="grid grid-cols-3 gap-4 mb-3">
+                    <div>
+                      <div class="text-xs opacity-70 mb-1">ยอดอ่าน</div>
+                      <div class="font-bold text-lg">${novel.reads.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <div class="text-xs opacity-70 mb-1">การเติบโต</div>
+                      <div class="font-bold text-lg text-green-600">${novel.growth}</div>
+                    </div>
+                    <div>
+                      <div class="text-xs opacity-70 mb-1">เรตติ้ง</div>
+                      <div class="font-bold text-lg">⭐ ${novel.rating}</div>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-2xl">${novel.trend}</span>
+                    <span class="text-sm font-semibold opacity-70">${novel.growth === '+25%' ? 'เติบโตอย่างรวดเร็ว' : novel.growth === '+18%' ? 'เติบโตดี' : 'เติบโตสม่ำเสมอ'}</span>
+                  </div>
+                </div>
+                
+                <div class="flex flex-col gap-2">
+                  <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" onclick="showToast('📊 วิเคราะห์ ${novel.title}')">
+                    📊 วิเคราะห์
+                  </button>
+                  <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold whitespace-nowrap" onclick="showToast('🎯 โปรโมท ${novel.title}')">
+                    🎯 โปรโมท
+                  </button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="mt-8 p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">📈 แนวโน้มความนิยม</h3>
+          <div class="space-y-4">
+            ${popularNovels.map(novel => `
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold">#${novel.rank}</span>
+                    <span>${novel.title}</span>
+                  </div>
+                  <span class="font-bold">${novel.reads.toLocaleString()}</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                  <div class="progress-bar h-3 rounded-full" style="width: ${(novel.reads / 234000 * 100)}%; background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function getCategoriesContent() {
+      return `
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">📂 จัดการหมวดหมู่ (${categories.length})</h2>
+            <p class="text-sm opacity-70 mt-2">จัดการและตรวจสอบหมวดหมู่คอนเทนต์</p>
+          </div>
+          <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showToast('➕ เพิ่มหมวดหมู่ใหม่')">
+            ➕ เพิ่มหมวดหมู่
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${categories.map(cat => `
+            <div class="content-card p-6 rounded-2xl shadow-lg">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" style="background-color: ${cat.color}20;">
+                  ${cat.icon}
+                </div>
+                <div class="flex-1">
+                  <h3 class="text-xl font-bold mb-1">${cat.name}</h3>
+                  <p class="text-sm opacity-70">${cat.novels.toLocaleString()} เรื่อง</p>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-2 gap-4 mb-4">
+                <div class="text-center p-3 rounded-lg" style="background-color: ${cat.color}10;">
+                  <div class="text-2xl font-bold mb-1" style="color: ${cat.color};">${cat.pending}</div>
+                  <div class="text-xs opacity-70">รออนุมัติ</div>
+                </div>
+                <div class="text-center p-3 rounded-lg" style="background-color: #10b98110;">
+                  <div class="text-2xl font-bold mb-1 text-green-600">${cat.approved}</div>
+                  <div class="text-xs opacity-70">อนุมัติวันนี้</div>
+                </div>
+              </div>
+              
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                <div class="h-2 rounded-full" style="width: ${(cat.novels / 1245 * 100)}%; background-color: ${cat.color};"></div>
+              </div>
+              
+              <div class="flex gap-2">
+                <button class="action-btn flex-1 py-2 rounded-lg text-sm font-semibold" onclick="showToast('📊 ดูสถิติ ${cat.name}')">
+                  📊 สถิติ
+                </button>
+                <button class="action-btn flex-1 py-2 rounded-lg text-sm font-semibold" onclick="showToast('✏️ แก้ไข ${cat.name}')">
+                  ✏️ แก้ไข
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function getReportsContent() {
+      return `
+        <div class="mb-6">
+          <h2 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">📊 รายงานและสถิติ</h2>
+          <p class="text-sm opacity-70 mt-2">ภาพรวมการจัดการคอนเทนต์</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-5xl mb-3">⚡</div>
+            <div class="text-3xl font-bold mb-2">24</div>
+            <div class="text-sm opacity-70">คอนเทนต์รออนุมัติ</div>
+            <div class="text-xs opacity-60 mt-2">🔴 ต้องดำเนินการ</div>
+          </div>
+          <div class="p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-5xl mb-3">✅</div>
+            <div class="text-3xl font-bold mb-2">156</div>
+            <div class="text-sm opacity-70">อนุมัติวันนี้</div>
+            <div class="text-xs opacity-60 mt-2 text-green-600">📈 +15% จากเมื่อวาน</div>
+          </div>
+          <div class="p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-5xl mb-3">⏱️</div>
+            <div class="text-3xl font-bold mb-2">2.5 ชม.</div>
+            <div class="text-sm opacity-70">เวลาตรวจสอบเฉลี่ย</div>
+            <div class="text-xs opacity-60 mt-2 text-blue-600">📊 -10% จากเมื่อวาน</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📈 การอนุมัติรายวัน (7 วัน)</h3>
+            <div class="space-y-4">
+              ${[
+                { day: 'วันจันทร์', value: 142, percent: 85 },
+                { day: 'วันอังคาร', value: 156, percent: 93 },
+                { day: 'วันพุธ', value: 168, percent: 100 },
+                { day: 'วันพฤหัสฯ', value: 151, percent: 90 },
+                { day: 'วันศุกร์', value: 145, percent: 86 },
+                { day: 'วันเสาร์', value: 98, percent: 58 },
+                { day: 'วันอาทิตย์', value: 87, percent: 52 }
+              ].map(data => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold">${data.day}</span>
+                    <span class="text-sm font-bold">${data.value} เรื่อง</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="progress-bar h-3 rounded-full" style="width: ${data.percent}%; background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📂 การอนุมัติตามหมวดหมู่</h3>
+            <div class="space-y-4">
+              ${categories.slice(0, 6).map(cat => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xl">${cat.icon}</span>
+                      <span class="text-sm font-semibold">${cat.name}</span>
+                    </div>
+                    <span class="text-sm font-bold">${cat.approved} เรื่อง</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="progress-bar h-3 rounded-full" style="width: ${(cat.approved / 45 * 100)}%; background-color: ${cat.color};"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">🏆 ผลงานการจัดการ</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center">
+              <div class="text-4xl mb-2">🎯</div>
+              <div class="text-2xl font-bold mb-1">98.5%</div>
+              <div class="text-sm opacity-70">อัตราความแม่นยำ</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-2">⚡</div>
+              <div class="text-2xl font-bold mb-1">2.5 ชม.</div>
+              <div class="text-sm opacity-70">เวลาตรวจสอบเฉลี่ย</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-2">✅</div>
+              <div class="text-2xl font-bold mb-1">892</div>
+              <div class="text-sm opacity-70">อนุมัติสัปดาห์นี้</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl mb-2">📊</div>
+              <div class="text-2xl font-bold mb-1">3,847</div>
+              <div class="text-sm opacity-70">จัดการทั้งหมด</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function reviewNovel(id, title, author) {
+      showToast(`📖 กำลังเปิด "${title}" เพื่ออ่านและตรวจสอบ...`);
+      setTimeout(() => {
+        showToast(`✨ พร้อมตรวจสอบเนื้อหาแล้ว!`);
+      }, 1500);
+    }
+
+    function quickApprove(id, title) {
+      showToast(`⚡ กำลังอนุมัติ "${title}" แบบด่วน...`);
+      setTimeout(() => {
+        showToast(`✅ อนุมัติ "${title}" สำเร็จ!`);
+        const pendingCount = document.getElementById('pending-count');
+        if (pendingCount) {
+          const current = parseInt(pendingCount.textContent);
+          pendingCount.textContent = current - 1;
+        }
+      }, 1000);
+    }
+
+    function showApproveModal(id, title) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content" style="background-color: ${surfaceColor}; color: ${textColor};">
+          <div class="text-center mb-6">
+            <div class="text-6xl mb-4">✅</div>
+            <h3 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">อนุมัตินิยาย</h3>
+            <p class="opacity-70">${title}</p>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-sm font-semibold mb-2">หมายเหตุ (ถ้ามี)</label>
+            <textarea class="review-textarea w-full px-4 py-3 rounded-xl border-2 focus:outline-none" rows="4" placeholder="ระบุหมายเหตุหรือคำแนะนำเพิ่มเติม..." style="background-color: ${surfaceColor}; color: ${textColor}; border-color: ${primaryColor}40;"></textarea>
+          </div>
+          
+          <div class="flex gap-3">
+            <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="confirmApprove(${id}, '${title}')" style="background-color: ${primaryColor}; color: white;">
+              ✅ ยืนยันการอนุมัติ
+            </button>
+            <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="closeModal()" style="background-color: ${surfaceColor}; color: ${textColor}; border: 2px solid ${primaryColor}40;">
+              ❌ ยกเลิก
+            </button>
+          </div>
+        </div>
+      `;
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+      
+      document.getElementById('modal-container').appendChild(modal);
+    }
+
+    function showRejectModal(id, title) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content" style="background-color: ${surfaceColor}; color: ${textColor};">
+          <div class="text-center mb-6">
+            <div class="text-6xl mb-4">❌</div>
+            <h3 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">ปฏิเสธนิยาย</h3>
+            <p class="opacity-70">${title}</p>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-sm font-semibold mb-2">เหตุผลในการปฏิเสธ *</label>
+            <textarea class="review-textarea w-full px-4 py-3 rounded-xl border-2 focus:outline-none" rows="4" placeholder="กรุณาระบุเหตุผลที่ชัดเจนเพื่อแจ้งให้ผู้เขียนทราบ..." style="background-color: ${surfaceColor}; color: ${textColor}; border-color: ${primaryColor}40;"></textarea>
+          </div>
+          
+          <div class="flex gap-3">
+            <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="confirmReject(${id}, '${title}')" style="background-color: #ef4444; color: white;">
+              ❌ ยืนยันการปฏิเสธ
+            </button>
+            <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="closeModal()" style="background-color: ${surfaceColor}; color: ${textColor}; border: 2px solid ${primaryColor}40;">
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      `;
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+      
+      document.getElementById('modal-container').appendChild(modal);
+    }
+
+    function showFeedbackModal(id, title) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.innerHTML = `
+        <div class="modal-content" style="background-color: ${surfaceColor}; color: ${textColor};">
+          <div class="text-center mb-6">
+            <div class="text-6xl mb-4">💬</div>
+            <h3 class="text-2xl font-bold mb-2" style="font-family: 'Prompt', sans-serif;">ขอแก้ไขเนื้อหา</h3>
+            <p class="opacity-70">${title}</p>
+          </div>
+          
+          <div class="mb-6">
+            <label class="block text-sm font-semibold mb-2">รายละเอียดที่ต้องแก้ไข *</label>
+            <textarea class="review-textarea w-full px-4 py-3 rounded-xl border-2 focus:outline-none" rows="5" placeholder="ระบุรายละเอียดที่ต้องการให้แก้ไขอย่างชัดเจน เช่น ข้อผิดพลาดทางภาษา, เนื้อหาที่ไม่เหมาะสม, หรือข้อเสนอแนะ..." style="background-color: ${surfaceColor}; color: ${textColor}; border-color: ${primaryColor}40;"></textarea>
+          </div>
+          
+          <div class="flex gap-3">
+            <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="confirmFeedback(${id}, '${title}')" style="background-color: ${primaryColor}; color: white;">
+              💬 ส่งข้อเสนอแนะ
+            </button>
+            <button class="action-btn flex-1 py-3 rounded-xl font-semibold" onclick="closeModal()" style="background-color: ${surfaceColor}; color: ${textColor}; border: 2px solid ${primaryColor}40;">
+              ยกเลิก
+            </button>
+          </div>
+        </div>
+      `;
+      
+      modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+      };
+      
+      document.getElementById('modal-container').appendChild(modal);
+    }
+
+    function confirmApprove(id, title) {
+      closeModal();
+      showToast(`✅ กำลังอนุมัติ "${title}"...`);
+      setTimeout(() => {
+        showToast(`🎉 อนุมัติ "${title}" สำเร็จ! ส่งแจ้งเตือนให้ผู้เขียนแล้ว`);
+        const pendingCount = document.getElementById('pending-count');
+        if (pendingCount) {
+          const current = parseInt(pendingCount.textContent);
+          pendingCount.textContent = current - 1;
+        }
+      }, 1000);
+    }
+
+    function confirmReject(id, title) {
+      closeModal();
+      showToast(`❌ กำลังปฏิเสธ "${title}"...`);
+      setTimeout(() => {
+        showToast(`📧 ปฏิเสธ "${title}" และส่งเหตุผลให้ผู้เขียนแล้ว`);
+        const pendingCount = document.getElementById('pending-count');
+        if (pendingCount) {
+          const current = parseInt(pendingCount.textContent);
+          pendingCount.textContent = current - 1;
+        }
+      }, 1000);
+    }
+
+    function confirmFeedback(id, title) {
+      closeModal();
+      showToast(`💬 กำลังส่งข้อเสนอแนะสำหรับ "${title}"...`);
+      setTimeout(() => {
+        showToast(`✅ ส่งข้อเสนอแนะสำเร็จ! รอผู้เขียนแก้ไข`);
+      }, 1000);
+    }
+
+    function closeModal() {
+      const container = document.getElementById('modal-container');
+      container.innerHTML = '';
+    }
+
+    function showToast(message) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        background-color: ${primaryColor};
+        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        max-width: 400px;
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = '@keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+      document.head.appendChild(style);
+      
+      document.getElementById('toast-container').appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.4s ease-in';
+        const styleOut = document.createElement('style');
+        styleOut.textContent = '@keyframes slideOut { to { transform: translateX(400px); opacity: 0; } }';
+        document.head.appendChild(styleOut);
+        
+        setTimeout(() => {
+          toast.remove();
+          style.remove();
+          styleOut.remove();
+        }, 400);
+      }, 3000);
+    }
+
+    function applyStyles() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+      document.body.style.backgroundColor = bgColor;
+      document.body.style.color = textColor;
+      
+      document.getElementById('main-container').style.backgroundColor = bgColor;
+      
+      document.getElementById('header').style.backgroundColor = surfaceColor;
+      document.getElementById('header').style.color = textColor;
+      document.getElementById('header').style.borderColor = bgColor;
+      
+      document.getElementById('brand-name').textContent = config.brand_name || defaultConfig.brand_name;
+      document.getElementById('brand-name').style.fontSize = `${fontSize * 1.5}px`;
+      document.getElementById('brand-name').style.color = textColor;
+      
+      document.getElementById('welcome-message').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('welcome-message').style.fontSize = `${fontSize * 0.875}px`;
+      
+      document.getElementById('status-indicator').style.backgroundColor = `${primaryColor}20`;
+      document.getElementById('status-indicator').style.color = primaryColor;
+      
+      document.getElementById('profile-btn').style.backgroundColor = primaryColor;
+      document.getElementById('profile-btn').style.color = '#ffffff';
+      
+      document.getElementById('stats-bar').style.backgroundColor = surfaceColor;
+      document.getElementById('stats-bar').style.borderColor = bgColor;
+      
+      ['stat-1', 'stat-2', 'stat-3', 'stat-4'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.backgroundColor = `${primaryColor}10`;
+        }
+      });
+      
+      const pendingLabel = document.getElementById('pending-label');
+      if (pendingLabel) {
+        pendingLabel.textContent = config.pending_title || defaultConfig.pending_title;
+      }
+      
+      document.getElementById('tabs-container').style.backgroundColor = surfaceColor;
+      document.getElementById('tabs-container').style.borderColor = bgColor;
+      
+      const tabs = document.querySelectorAll('.tab-item');
+      tabs.forEach(tab => {
+        tab.style.color = textColor;
+        if (tab.classList.contains('active')) {
+          tab.style.backgroundColor = primaryColor;
+          tab.style.color = '#ffffff';
+        } else {
+          tab.style.backgroundColor = `${primaryColor}20`;
+        }
+      });
+      
+      document.getElementById('main-content').style.backgroundColor = bgColor;
+      document.getElementById('main-content').style.color = textColor;
+      
+      const contentCards = document.querySelectorAll('.content-card');
+      contentCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const actionBtns = document.querySelectorAll('.action-btn');
+      actionBtns.forEach((btn, index) => {
+        if (btn.textContent.includes('อนุมัติ') || btn.textContent.includes('✅')) {
+          btn.style.backgroundColor = secondaryColor;
+        } else if (btn.textContent.includes('ปฏิเสธ') || btn.textContent.includes('❌')) {
+          btn.style.backgroundColor = '#ef4444';
+        } else {
+          btn.style.backgroundColor = primaryColor;
+        }
+        btn.style.color = '#ffffff';
+      });
+    }
+
+    async function onConfigChange(config) {
+      applyStyles();
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["brand_name", config.brand_name || defaultConfig.brand_name],
+        ["dashboard_title", config.dashboard_title || defaultConfig.dashboard_title],
+        ["welcome_message", config.welcome_message || defaultConfig.welcome_message],
+        ["pending_title", config.pending_title || defaultConfig.pending_title]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    loadContent('pending');
+    applyStyles();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a8858f2a5767325',t:'MTc2NDgyMDMwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

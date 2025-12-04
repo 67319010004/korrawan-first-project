@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เข้าสู่ระบบ - StoryByte</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@400;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+    }
+    
+    .auth-card {
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .action-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn:active:not(:disabled) {
+      transform: translateY(0px);
+    }
+    
+    .action-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .action-btn.loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .input-field {
+      transition: all 0.3s ease;
+    }
+    
+    .input-field:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .flower-decoration {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .scale-in {
+      animation: scaleIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.5); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    .logo-pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .password-toggle {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    
+    .password-toggle:hover {
+      transform: scale(1.1);
+    }
+    
+    .link-text {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .link-text:hover {
+      text-decoration: underline;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full h-full">
+  <main class="w-full h-full flex items-center justify-center p-6" id="main-container"><!-- Login/Register View -->
+   <div id="auth-view" class="w-full max-w-md">
+    <div class="auth-card p-10 rounded-3xl shadow-2xl" id="auth-card"><!-- Logo -->
+     <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center gap-3 mb-4">
+       <div class="text-5xl flower-decoration">
+        🌸
+       </div>
+       <h1 class="text-4xl font-bold" id="brand-name" style="font-family: 'Prompt', sans-serif;">StoryByte</h1>
+      </div>
+      <p class="text-lg opacity-70" id="brand-tagline">ทุกเรื่องราวของรัก 💕</p>
+     </div><!-- Login Form -->
+     <div id="login-form" class="fade-in">
+      <h2 class="text-3xl font-bold mb-3 text-center" id="login-title" style="font-family: 'Prompt', sans-serif;">ยินดีต้อนรับกลับมา</h2>
+      <p class="text-center mb-8 opacity-70" id="login-subtitle">เข้าสู่ระบบเพื่ออ่านนิยาย GL ที่คุณรัก</p>
+      <form onsubmit="handleLogin(event)" id="login-form-element">
+       <div class="space-y-5">
+        <div><label for="login-email" class="block text-sm font-semibold mb-2">อีเมล</label> <input type="email" id="login-email" required placeholder="your@email.com" class="input-field w-full px-5 py-4 rounded-xl border-2 focus:outline-none">
+        </div>
+        <div><label for="login-password" class="block text-sm font-semibold mb-2">รหัสผ่าน</label>
+         <div class="relative"><input type="password" id="login-password" required placeholder="••••••••" class="input-field w-full px-5 py-4 rounded-xl border-2 focus:outline-none pr-12"> <span class="password-toggle absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl" onclick="togglePassword('login-password')"> 👁️ </span>
+         </div>
+        </div>
+        <div class="flex items-center justify-between text-sm"><label class="flex items-center gap-2 cursor-pointer"> <input type="checkbox" class="w-4 h-4 rounded" id="remember-me"> <span>จดจำฉันไว้</span> </label> <span class="link-text opacity-70" id="forgot-password">ลืมรหัสผ่าน?</span>
+        </div><button type="submit" class="action-btn w-full py-4 rounded-xl font-bold text-lg shadow-lg" id="login-btn"> <span id="login-btn-text">🔐 เข้าสู่ระบบ</span> </button>
+       </div>
+      </form>
+      <div class="mt-8 text-center"><span class="opacity-70">ยังไม่มีบัญชี? </span> <span class="link-text font-bold" id="switch-to-register" onclick="switchToRegister()">สมัครสมาชิก</span>
+      </div>
+     </div><!-- Register Form -->
+     <div id="register-form" style="display: none;">
+      <h2 class="text-3xl font-bold mb-3 text-center" id="register-title" style="font-family: 'Prompt', sans-serif;">สร้างบัญชีใหม่</h2>
+      <p class="text-center mb-8 opacity-70" id="register-subtitle">เริ่มต้นการเดินทางกับเรื่องราวแห่งความรัก</p>
+      <form onsubmit="handleRegister(event)" id="register-form-element">
+       <div class="space-y-5">
+        <div><label for="register-name" class="block text-sm font-semibold mb-2">ชื่อผู้ใช้</label> <input type="text" id="register-name" required placeholder="ชื่อของคุณ" class="input-field w-full px-5 py-4 rounded-xl border-2 focus:outline-none">
+        </div>
+        <div><label for="register-email" class="block text-sm font-semibold mb-2">อีเมล</label> <input type="email" id="register-email" required placeholder="your@email.com" class="input-field w-full px-5 py-4 rounded-xl border-2 focus:outline-none">
+        </div>
+        <div><label for="register-password" class="block text-sm font-semibold mb-2">รหัสผ่าน</label>
+         <div class="relative"><input type="password" id="register-password" required minlength="6" placeholder="อย่างน้อย 6 ตัวอักษร" class="input-field w-full px-5 py-4 rounded-xl border-2 focus:outline-none pr-12"> <span class="password-toggle absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl" onclick="togglePassword('register-password')"> 👁️ </span>
+         </div>
+        </div>
+        <div><label for="register-confirm-password" class="block text-sm font-semibold mb-2">ยืนยันรหัสผ่าน</label>
+         <div class="relative"><input type="password" id="register-confirm-password" required minlength="6" placeholder="ใส่รหัสผ่านอีกครั้ง" class="input-field w-full px-5 py-4 rounded-xl border-2 focus:outline-none pr-12"> <span class="password-toggle absolute right-4 top-1/2 transform -translate-y-1/2 text-2xl" onclick="togglePassword('register-confirm-password')"> 👁️ </span>
+         </div>
+        </div>
+        <div class="flex items-start gap-2 text-sm"><input type="checkbox" required class="w-4 h-4 rounded mt-1" id="agree-terms"> <label for="agree-terms" class="opacity-70"> ฉันยอมรับ <span class="link-text font-semibold">เงื่อนไขการใช้งาน</span> และ <span class="link-text font-semibold">นโยบายความเป็นส่วนตัว</span> </label>
+        </div><button type="submit" class="action-btn w-full py-4 rounded-xl font-bold text-lg shadow-lg" id="register-btn"> <span id="register-btn-text">✨ สมัครสมาชิก</span> </button>
+       </div>
+      </form>
+      <div class="mt-8 text-center"><span class="opacity-70">มีบัญชีอยู่แล้ว? </span> <span class="link-text font-bold" id="switch-to-login" onclick="switchToLogin()">เข้าสู่ระบบ</span>
+      </div>
+     </div>
+    </div>
+   </div><!-- Success View -->
+   <div id="success-view" class="w-full max-w-md text-center" style="display: none;">
+    <div class="scale-in p-10 rounded-3xl shadow-2xl" id="success-card"><!-- StoryByte Logo -->
+     <div class="mb-8 logo-pulse">
+      <div class="inline-flex items-center justify-center gap-4 mb-6">
+       <div class="text-7xl">
+        🌸
+       </div>
+       <div>
+        <h1 class="text-5xl font-bold mb-2" id="success-brand-name" style="font-family: 'Prompt', sans-serif;">StoryByte</h1>
+        <p class="text-lg opacity-70" id="success-brand-tagline">ทุกเรื่องราวของรัก</p>
+       </div>
+      </div>
+     </div>
+     <div class="text-6xl mb-6">
+      ✅
+     </div>
+     <h2 class="text-4xl font-bold mb-4" id="success-message" style="font-family: 'Prompt', sans-serif;">เข้าสู่ระบบสำเร็จ!</h2>
+     <p class="text-xl opacity-70 mb-8" id="welcome-message">กำลังพาคุณไปสู่โลกแห่งนิยาย GL... 💕</p>
+     <div class="flex justify-center gap-3">
+      <div class="w-3 h-3 rounded-full animate-bounce" id="dot-1" style="animation-delay: 0s;"></div>
+      <div class="w-3 h-3 rounded-full animate-bounce" id="dot-2" style="animation-delay: 0.2s;"></div>
+      <div class="w-3 h-3 rounded-full animate-bounce" id="dot-3" style="animation-delay: 0.4s;"></div>
+     </div>
+    </div>
+   </div>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#fff0f5",
+      surface_color: "#ffffff",
+      text_color: "#2d2d2d",
+      primary_action_color: "#ec4899",
+      secondary_action_color: "#a78bfa",
+      font_family: "Sarabun",
+      font_size: 16,
+      brand_name: "StoryByte",
+      brand_tagline: "ทุกเรื่องราวของรัก 💕",
+      login_title: "ยินดีต้อนรับกลับมา",
+      login_subtitle: "เข้าสู่ระบบเพื่ออ่านนิยาย GL ที่คุณรัก",
+      btn_login: "🔐 เข้าสู่ระบบ",
+      register_title: "สร้างบัญชีใหม่",
+      register_subtitle: "เริ่มต้นการเดินทางกับเรื่องราวแห่งความรัก",
+      btn_register: "✨ สมัครสมาชิก",
+      success_message: "เข้าสู่ระบบสำเร็จ!",
+      welcome_message: "กำลังพาคุณไปสู่โลกแห่งนิยาย GL... 💕"
+    };
+
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+      } else {
+        input.type = 'password';
+      }
+    }
+
+    function switchToRegister() {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'block';
+      document.getElementById('register-form').classList.add('fade-in');
+    }
+
+    function switchToLogin() {
+      document.getElementById('register-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('login-form').classList.add('fade-in');
+    }
+
+    function showInlineMessage(message, color) {
+      const messageDiv = document.createElement('div');
+      messageDiv.textContent = message;
+      messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 18px 28px;
+        border-radius: 14px;
+        font-weight: 600;
+        background-color: ${color};
+        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = '@keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+      document.head.appendChild(style);
+      
+      document.body.appendChild(messageDiv);
+      
+      setTimeout(() => {
+        messageDiv.style.animation = 'slideOut 0.4s ease-in';
+        messageDiv.style.animationFillMode = 'forwards';
+        
+        const styleOut = document.createElement('style');
+        styleOut.textContent = '@keyframes slideOut { to { transform: translateX(400px); opacity: 0; } }';
+        document.head.appendChild(styleOut);
+        
+        setTimeout(() => {
+          document.body.removeChild(messageDiv);
+          document.head.removeChild(style);
+          document.head.removeChild(styleOut);
+        }, 400);
+      }, 3000);
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      if (!email || !password) {
+        const textColor = window.elementSdk ? 
+          (window.elementSdk.config.text_color || defaultConfig.text_color) : 
+          defaultConfig.text_color;
+        showInlineMessage('⚠️ กรุณากรอกข้อมูลให้ครบถ้วน', textColor);
+        return;
+      }
+      
+      const btn = document.getElementById('login-btn');
+      const btnText = document.getElementById('login-btn-text');
+      
+      btn.disabled = true;
+      btn.classList.add('loading');
+      btnText.style.visibility = 'hidden';
+      
+      setTimeout(() => {
+        document.getElementById('auth-view').style.display = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      }, 1500);
+    }
+
+    async function handleRegister(event) {
+      event.preventDefault();
+      
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+      
+      if (!name || !email || !password || !confirmPassword) {
+        const textColor = window.elementSdk ? 
+          (window.elementSdk.config.text_color || defaultConfig.text_color) : 
+          defaultConfig.text_color;
+        showInlineMessage('⚠️ กรุณากรอกข้อมูลให้ครบถ้วน', textColor);
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        const textColor = window.elementSdk ? 
+          (window.elementSdk.config.text_color || defaultConfig.text_color) : 
+          defaultConfig.text_color;
+        showInlineMessage('❌ รหัสผ่านไม่ตรงกัน', textColor);
+        return;
+      }
+      
+      const btn = document.getElementById('register-btn');
+      const btnText = document.getElementById('register-btn-text');
+      
+      btn.disabled = true;
+      btn.classList.add('loading');
+      btnText.style.visibility = 'hidden';
+      
+      setTimeout(() => {
+        document.getElementById('auth-view').style.display = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      }, 1500);
+    }
+
+    async function onConfigChange(config) {
+      const mainContainer = document.getElementById('main-container');
+      const authCard = document.getElementById('auth-card');
+      const successCard = document.getElementById('success-card');
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      mainContainer.style.backgroundColor = bgColor;
+      mainContainer.style.color = textColor;
+      
+      authCard.style.backgroundColor = surfaceColor;
+      authCard.style.color = textColor;
+      
+      successCard.style.backgroundColor = surfaceColor;
+      successCard.style.color = textColor;
+      
+      // Input fields
+      const inputs = document.querySelectorAll('.input-field');
+      inputs.forEach(input => {
+        input.style.backgroundColor = bgColor;
+        input.style.color = textColor;
+        input.style.borderColor = primaryColor;
+      });
+      
+      // Checkboxes
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach(checkbox => {
+        checkbox.style.accentColor = primaryColor;
+      });
+      
+      // Buttons
+      document.getElementById('login-btn').style.backgroundColor = primaryColor;
+      document.getElementById('login-btn').style.color = '#ffffff';
+      
+      document.getElementById('register-btn').style.backgroundColor = primaryColor;
+      document.getElementById('register-btn').style.color = '#ffffff';
+      
+      // Link texts
+      const linkTexts = document.querySelectorAll('.link-text');
+      linkTexts.forEach(link => {
+        link.style.color = primaryColor;
+      });
+      
+      // Success dots
+      document.getElementById('dot-1').style.backgroundColor = primaryColor;
+      document.getElementById('dot-2').style.backgroundColor = secondaryColor;
+      document.getElementById('dot-3').style.backgroundColor = primaryColor;
+      
+      // Text content
+      document.getElementById('brand-name').textContent = config.brand_name || defaultConfig.brand_name;
+      document.getElementById('brand-name').style.fontSize = `${fontSize * 2.5}px`;
+      document.getElementById('brand-name').style.color = textColor;
+      
+      document.getElementById('brand-tagline').textContent = config.brand_tagline || defaultConfig.brand_tagline;
+      document.getElementById('brand-tagline').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('login-title').textContent = config.login_title || defaultConfig.login_title;
+      document.getElementById('login-title').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('login-title').style.color = textColor;
+      
+      document.getElementById('login-subtitle').textContent = config.login_subtitle || defaultConfig.login_subtitle;
+      document.getElementById('login-subtitle').style.fontSize = `${fontSize}px`;
+      
+      document.getElementById('login-btn-text').textContent = config.btn_login || defaultConfig.btn_login;
+      document.getElementById('login-btn').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('register-title').textContent = config.register_title || defaultConfig.register_title;
+      document.getElementById('register-title').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('register-title').style.color = textColor;
+      
+      document.getElementById('register-subtitle').textContent = config.register_subtitle || defaultConfig.register_subtitle;
+      document.getElementById('register-subtitle').style.fontSize = `${fontSize}px`;
+      
+      document.getElementById('register-btn-text').textContent = config.btn_register || defaultConfig.btn_register;
+      document.getElementById('register-btn').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('success-brand-name').textContent = config.brand_name || defaultConfig.brand_name;
+      document.getElementById('success-brand-name').style.fontSize = `${fontSize * 3.125}px`;
+      document.getElementById('success-brand-name').style.color = textColor;
+      
+      document.getElementById('success-brand-tagline').textContent = config.brand_tagline || defaultConfig.brand_tagline;
+      document.getElementById('success-brand-tagline').style.fontSize = `${fontSize * 1.125}px`;
+      
+      document.getElementById('success-message').textContent = config.success_message || defaultConfig.success_message;
+      document.getElementById('success-message').style.fontSize = `${fontSize * 2.5}px`;
+      document.getElementById('success-message').style.color = textColor;
+      
+      document.getElementById('welcome-message').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('welcome-message').style.fontSize = `${fontSize * 1.25}px`;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["brand_name", config.brand_name || defaultConfig.brand_name],
+        ["brand_tagline", config.brand_tagline || defaultConfig.brand_tagline],
+        ["login_title", config.login_title || defaultConfig.login_title],
+        ["login_subtitle", config.login_subtitle || defaultConfig.login_subtitle],
+        ["btn_login", config.btn_login || defaultConfig.btn_login],
+        ["register_title", config.register_title || defaultConfig.register_title],
+        ["register_subtitle", config.register_subtitle || defaultConfig.register_subtitle],
+        ["btn_register", config.btn_register || defaultConfig.btn_register],
+        ["success_message", config.success_message || defaultConfig.success_message],
+        ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a881e3fe4f28954',t:'MTc2NDgxNzkwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

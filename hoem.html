@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoryByte - นิยาย BL &amp; GL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@400;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 50%, #f67280 100%);
+    }
+    
+    .gradient-bg-alt {
+      background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 50%, #ffd3b6 100%);
+    }
+    
+    .book-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .book-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .category-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .category-card:hover {
+      transform: scale(1.05);
+    }
+    
+    .heart-icon {
+      animation: heartbeat 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1); }
+    }
+    
+    .feature-card {
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full min-h-full">
+  <main class="w-full"><!-- Navigation -->
+   <nav class="w-full py-5 px-6 shadow-md" id="nav">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+     <div class="flex items-center space-x-3">
+      <div class="heart-icon text-3xl">
+       💕
+      </div><span class="text-3xl font-bold" id="site-title" style="font-family: 'Prompt', sans-serif;">StoryByte</span>
+     </div>
+     <div class="hidden md:flex items-center space-x-8"><a href="#bl" class="font-semibold hover:opacity-70 transition-opacity">BL</a> <a href="#gl" class="font-semibold hover:opacity-70 transition-opacity">GL</a> <a href="#new" class="font-semibold hover:opacity-70 transition-opacity">ใหม่ล่าสุด</a> <a href="#popular" class="font-semibold hover:opacity-70 transition-opacity">ยอดนิยม</a>
+     </div>
+    </div>
+   </nav><!-- Hero Section -->
+   <section class="w-full py-24 px-6 gradient-bg" id="hero">
+    <div class="max-w-7xl mx-auto text-center">
+     <div class="text-6xl mb-6">
+      💖
+     </div>
+     <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white" id="hero-title" style="font-family: 'Prompt', sans-serif;">ค้นพบเรื่องราวแห่งความรัก</h1>
+     <p class="text-xl md:text-2xl mb-4 text-white opacity-95" id="tagline">Love Stories for Everyone 🏳️‍🌈</p>
+     <p class="text-lg md:text-xl mb-10 text-white opacity-90" id="hero-subtitle">นิยาย BL และ GL คุณภาพสูง เช่าหรือซื้อได้ในราคาเอื้อมถึง</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center"><button class="px-10 py-4 rounded-full text-lg font-bold transition-all hover:opacity-90 hover:shadow-2xl transform hover:scale-105" id="cta-rent"> 📚 เช่าอ่านเลย </button> <button class="px-10 py-4 rounded-full text-lg font-bold transition-all hover:opacity-90 hover:shadow-2xl transform hover:scale-105" id="cta-buy"> ⭐ ซื้อเป็นของตัวเอง </button>
+     </div>
+    </div>
+   </section><!-- Categories Section -->
+   <section class="w-full py-20 px-6" id="categories">
+    <div class="max-w-7xl mx-auto">
+     <h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="font-family: 'Prompt', sans-serif;">หมวดหมู่ยอดนิยม</h2>
+     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"><!-- BL Category -->
+      <div class="category-card rounded-3xl p-10 text-center shadow-lg" id="bl-card">
+       <div class="text-7xl mb-6">
+        👬
+       </div>
+       <h3 class="text-3xl font-bold mb-4" id="category-bl" style="font-family: 'Prompt', sans-serif;">Boys Love</h3>
+       <p class="text-lg mb-6 opacity-80">เรื่องราวความรักของหนุ่มๆ ที่จะทำให้คุณหลงใหล</p><button class="px-8 py-3 rounded-full font-bold transition-all hover:opacity-90 transform hover:scale-105"> ดูทั้งหมด → </button>
+      </div><!-- GL Category -->
+      <div class="category-card rounded-3xl p-10 text-center shadow-lg" id="gl-card">
+       <div class="text-7xl mb-6">
+        👭
+       </div>
+       <h3 class="text-3xl font-bold mb-4" id="category-gl" style="font-family: 'Prompt', sans-serif;">Girls Love</h3>
+       <p class="text-lg mb-6 opacity-80">ความรักหวานๆ ของสาวๆ ที่อบอุ่นและน่ารัก</p><button class="px-8 py-3 rounded-full font-bold transition-all hover:opacity-90 transform hover:scale-105"> ดูทั้งหมด → </button>
+      </div>
+     </div>
+    </div>
+   </section><!-- Popular Books Section -->
+   <section class="w-full py-20 px-6" id="books">
+    <div class="max-w-7xl mx-auto">
+     <h2 class="text-4xl md:text-5xl font-bold text-center mb-4" style="font-family: 'Prompt', sans-serif;">นิยายยอดนิยม</h2>
+     <p class="text-center text-lg mb-12 opacity-70">เรื่องราวที่ทุกคนรอคอย</p><!-- BL Books -->
+     <div class="mb-16">
+      <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><span>💙</span> <span>Boys Love</span></h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg">
+         💙
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">รักนี้ที่รอคอย</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg">
+         💜
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">ใจเดียวกัน</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg">
+         🖤
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">รักซ่อนเร้น</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg">
+         💗
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">หัวใจของเรา</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+      </div>
+     </div><!-- GL Books -->
+     <div>
+      <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><span>🩷</span> <span>Girls Love</span></h3>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg-alt">
+         🌸
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">ดอกไม้ในใจ</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg-alt">
+         🌺
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">รักแรกพบ</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg-alt">
+         🌼
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">ใจที่โดดเดี่ยว</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+       <div class="book-card rounded-2xl overflow-hidden shadow-md">
+        <div class="h-72 flex items-center justify-center text-7xl gradient-bg-alt">
+         🌷
+        </div>
+        <div class="p-5">
+         <h4 class="font-bold text-lg mb-2">ความรักของเรา</h4>
+         <p class="text-sm opacity-70 mb-1">โดย: คุณนักเขียน</p>
+         <p class="text-sm font-semibold mb-4">เช่า 49฿ | ซื้อ 299฿</p><button class="w-full py-2 rounded-lg font-bold transition-all hover:opacity-90">อ่านเลย</button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section><!-- Features Section -->
+   <section class="w-full py-20 px-6" id="features">
+    <div class="max-w-7xl mx-auto">
+     <h2 class="text-4xl md:text-5xl font-bold text-center mb-12" style="font-family: 'Prompt', sans-serif;">ทำไมต้อง StoryByte?</h2>
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8"><!-- Feature 1 -->
+      <div class="feature-card p-8 rounded-2xl text-center shadow-lg">
+       <div class="text-6xl mb-5">
+        ✨
+       </div>
+       <h3 class="text-2xl font-bold mb-4" id="feature1-title" style="font-family: 'Prompt', sans-serif;">นิยายคุณภาพสูง</h3>
+       <p class="opacity-75 text-lg">คัดสรรนิยายคุณภาพจากนักเขียนชั้นนำ</p>
+      </div><!-- Feature 2 -->
+      <div class="feature-card p-8 rounded-2xl text-center shadow-lg">
+       <div class="text-6xl mb-5">
+        🎯
+       </div>
+       <h3 class="text-2xl font-bold mb-4" id="feature2-title" style="font-family: 'Prompt', sans-serif;">อัพเดทใหม่ทุกวัน</h3>
+       <p class="opacity-75 text-lg">ตอนใหม่ทุกวัน ไม่พลาดความสนุก</p>
+      </div><!-- Feature 3 -->
+      <div class="feature-card p-8 rounded-2xl text-center shadow-lg">
+       <div class="text-6xl mb-5">
+        💬
+       </div>
+       <h3 class="text-2xl font-bold mb-4" id="feature3-title" style="font-family: 'Prompt', sans-serif;">ชุมชนแฟนคลับ</h3>
+       <p class="opacity-75 text-lg">พูดคุยกับเพื่อนๆ ที่รักเรื่องเดียวกัน</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- CTA Section -->
+   <section class="w-full py-20 px-6 gradient-bg">
+    <div class="max-w-4xl mx-auto text-center">
+     <h2 class="text-4xl md:text-5xl font-bold mb-6 text-white" style="font-family: 'Prompt', sans-serif;">พร้อมเริ่มต้นแล้วหรือยัง?</h2>
+     <p class="text-xl mb-10 text-white opacity-90">เข้าร่วมกับนักอ่านหลายพันคนวันนี้</p>
+     <div class="flex flex-col sm:flex-row gap-4 justify-center"><button class="px-10 py-4 rounded-full text-lg font-bold transition-all hover:opacity-90 hover:shadow-2xl transform hover:scale-105"> สมัครสมาชิกฟรี → </button>
+     </div>
+    </div>
+   </section><!-- Footer -->
+   <footer class="w-full py-10 px-6" id="footer">
+    <div class="max-w-7xl mx-auto">
+     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div>
+       <h4 class="font-bold text-xl mb-4" style="font-family: 'Prompt', sans-serif;">StoryByte</h4>
+       <p class="opacity-75">แหล่งรวมนิยาย BL และ GL ที่ดีที่สุด</p>
+      </div>
+      <div>
+       <h4 class="font-bold text-lg mb-4">เมนู</h4>
+       <ul class="space-y-2 opacity-75">
+        <li><a href="#" class="hover:opacity-100">BL</a></li>
+        <li><a href="#" class="hover:opacity-100">GL</a></li>
+        <li><a href="#" class="hover:opacity-100">ใหม่ล่าสุด</a></li>
+        <li><a href="#" class="hover:opacity-100">ยอดนิยม</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-bold text-lg mb-4">ติดตาม</h4>
+       <div class="flex gap-4 text-2xl"><a href="#" class="hover:opacity-70 transition-opacity">📘</a> <a href="#" class="hover:opacity-70 transition-opacity">📷</a> <a href="#" class="hover:opacity-70 transition-opacity">🐦</a>
+       </div>
+      </div>
+     </div>
+     <div class="text-center pt-8 border-t opacity-75">
+      <p id="footer-text">© 2024 StoryByte. ทุกเรื่องราวเริ่มต้นที่นี่ 💕</p>
+     </div>
+    </div>
+   </footer>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: "#fff5f7",
+      surface_color: "#ffffff",
+      text_color: "#2d2d2d",
+      primary_action_color: "#ff6b9d",
+      secondary_action_color: "#c06c84",
+      font_family: "Sarabun",
+      font_size: 16,
+      site_title: "StoryByte",
+      tagline: "Love Stories for Everyone 🏳️‍🌈",
+      hero_title: "ค้นพบเรื่องราวแห่งความรัก",
+      hero_subtitle: "นิยาย BL และ GL คุณภาพสูง เช่าหรือซื้อได้ในราคาเอื้อมถึง",
+      cta_rent: "📚 เช่าอ่านเลย",
+      cta_buy: "⭐ ซื้อเป็นของตัวเอง",
+      category_bl: "Boys Love",
+      category_gl: "Girls Love",
+      feature1_title: "นิยายคุณภาพสูง",
+      feature2_title: "อัพเดทใหม่ทุกวัน",
+      feature3_title: "ชุมชนแฟนคลับ",
+      footer_text: "© 2024 StoryByte. ทุกเรื่องราวเริ่มต้นที่นี่ 💕"
+    };
+
+    async function onConfigChange(config) {
+      const body = document.body;
+      const nav = document.getElementById('nav');
+      const categories = document.getElementById('categories');
+      const books = document.getElementById('books');
+      const features = document.getElementById('features');
+      const footer = document.getElementById('footer');
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      body.style.backgroundColor = bgColor;
+      body.style.color = textColor;
+      body.style.fontFamily = `${fontFamily}, sans-serif`;
+      
+      nav.style.backgroundColor = surfaceColor;
+      nav.style.color = textColor;
+      
+      categories.style.backgroundColor = bgColor;
+      books.style.backgroundColor = surfaceColor;
+      features.style.backgroundColor = bgColor;
+      footer.style.backgroundColor = textColor;
+      footer.style.color = surfaceColor;
+      
+      const blCard = document.getElementById('bl-card');
+      const glCard = document.getElementById('gl-card');
+      blCard.style.backgroundColor = surfaceColor;
+      blCard.style.color = textColor;
+      glCard.style.backgroundColor = surfaceColor;
+      glCard.style.color = textColor;
+      
+      const featureCards = document.querySelectorAll('.feature-card');
+      featureCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const bookCards = document.querySelectorAll('.book-card');
+      bookCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      const ctaRentBtns = document.querySelectorAll('#cta-rent');
+      ctaRentBtns.forEach(btn => {
+        btn.style.backgroundColor = primaryColor;
+        btn.style.color = '#ffffff';
+      });
+      
+      const ctaBuyBtns = document.querySelectorAll('#cta-buy');
+      ctaBuyBtns.forEach(btn => {
+        btn.style.backgroundColor = surfaceColor;
+        btn.style.color = primaryColor;
+        btn.style.border = `3px solid ${primaryColor}`;
+      });
+      
+      const categoryButtons = document.querySelectorAll('.category-card button');
+      categoryButtons.forEach(btn => {
+        btn.style.backgroundColor = primaryColor;
+        btn.style.color = '#ffffff';
+      });
+      
+      const bookButtons = document.querySelectorAll('.book-card button');
+      bookButtons.forEach(btn => {
+        btn.style.backgroundColor = secondaryColor;
+        btn.style.color = '#ffffff';
+      });
+      
+      const ctaSection = document.querySelectorAll('.gradient-bg button');
+      ctaSection.forEach(btn => {
+        btn.style.backgroundColor = surfaceColor;
+        btn.style.color = primaryColor;
+      });
+      
+      document.getElementById('site-title').textContent = config.site_title || defaultConfig.site_title;
+      document.getElementById('site-title').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('site-title').style.color = textColor;
+      
+      document.getElementById('hero-title').textContent = config.hero_title || defaultConfig.hero_title;
+      document.getElementById('hero-title').style.fontSize = `${fontSize * 3.5}px`;
+      
+      document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+      document.getElementById('tagline').style.fontSize = `${fontSize * 1.25}px`;
+      
+      document.getElementById('hero-subtitle').textContent = config.hero_subtitle || defaultConfig.hero_subtitle;
+      document.getElementById('hero-subtitle').style.fontSize = `${fontSize * 1.125}px`;
+      
+      const ctaRentElements = document.querySelectorAll('#cta-rent');
+      ctaRentElements.forEach(el => {
+        el.textContent = config.cta_rent || defaultConfig.cta_rent;
+        el.style.fontSize = `${fontSize * 1.125}px`;
+      });
+      
+      const ctaBuyElements = document.querySelectorAll('#cta-buy');
+      ctaBuyElements.forEach(el => {
+        el.textContent = config.cta_buy || defaultConfig.cta_buy;
+        el.style.fontSize = `${fontSize * 1.125}px`;
+      });
+      
+      document.getElementById('category-bl').textContent = config.category_bl || defaultConfig.category_bl;
+      document.getElementById('category-bl').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('category-bl').style.color = textColor;
+      
+      document.getElementById('category-gl').textContent = config.category_gl || defaultConfig.category_gl;
+      document.getElementById('category-gl').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('category-gl').style.color = textColor;
+      
+      document.getElementById('feature1-title').textContent = config.feature1_title || defaultConfig.feature1_title;
+      document.getElementById('feature1-title').style.fontSize = `${fontSize * 1.5}px`;
+      document.getElementById('feature1-title').style.color = textColor;
+      
+      document.getElementById('feature2-title').textContent = config.feature2_title || defaultConfig.feature2_title;
+      document.getElementById('feature2-title').style.fontSize = `${fontSize * 1.5}px`;
+      document.getElementById('feature2-title').style.color = textColor;
+      
+      document.getElementById('feature3-title').textContent = config.feature3_title || defaultConfig.feature3_title;
+      document.getElementById('feature3-title').style.fontSize = `${fontSize * 1.5}px`;
+      document.getElementById('feature3-title').style.color = textColor;
+      
+      document.getElementById('footer-text').textContent = config.footer_text || defaultConfig.footer_text;
+      document.getElementById('footer-text').style.fontSize = `${fontSize}px`;
+      
+      const allHeadings = document.querySelectorAll('h2, h3, h4');
+      allHeadings.forEach(el => {
+        if (el.style.fontFamily.includes('Prompt')) {
+          el.style.fontFamily = `${fontFamily}, 'Prompt', sans-serif`;
+        } else {
+          el.style.fontFamily = `${fontFamily}, sans-serif`;
+        }
+      });
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["site_title", config.site_title || defaultConfig.site_title],
+        ["tagline", config.tagline || defaultConfig.tagline],
+        ["hero_title", config.hero_title || defaultConfig.hero_title],
+        ["hero_subtitle", config.hero_subtitle || defaultConfig.hero_subtitle],
+        ["cta_rent", config.cta_rent || defaultConfig.cta_rent],
+        ["cta_buy", config.cta_buy || defaultConfig.cta_buy],
+        ["category_bl", config.category_bl || defaultConfig.category_bl],
+        ["category_gl", config.category_gl || defaultConfig.category_gl],
+        ["feature1_title", config.feature1_title || defaultConfig.feature1_title],
+        ["feature2_title", config.feature2_title || defaultConfig.feature2_title],
+        ["feature3_title", config.feature3_title || defaultConfig.feature3_title],
+        ["footer_text", config.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a87ed8024ce7323',t:'MTc2NDgxNTkwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

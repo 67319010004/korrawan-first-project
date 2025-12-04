@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="th">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>แดชบอร์ดแอดมิน - StoryByte</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&family=Prompt:wght@400;600;700&display=swap');
+    
+    * {
+      font-family: 'Sarabun', sans-serif;
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .stat-card {
+      transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .action-btn {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .sidebar-item:hover {
+      transform: translateX(5px);
+    }
+    
+    .sidebar-item.active {
+      font-weight: 600;
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .table-row {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    
+    .table-row:hover {
+      transform: scale(1.01);
+    }
+    
+    .chart-bar {
+      transition: all 0.5s ease;
+    }
+    
+    .pulse-dot {
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.1); }
+    }
+    
+    .search-input {
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .progress-ring {
+      transition: stroke-dashoffset 0.5s ease;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="w-full h-full">
+  <div class="w-full h-full flex" id="main-container"><!-- Sidebar -->
+   <aside class="w-64 h-full p-6 flex flex-col" id="sidebar">
+    <div class="mb-8">
+     <div class="flex items-center gap-3 mb-2"><span class="text-4xl">👑</span>
+      <h1 class="text-2xl font-bold" id="brand-name" style="font-family: 'Prompt', sans-serif;">StoryByte Admin</h1>
+     </div>
+     <p class="text-sm opacity-70">ระบบจัดการ</p>
+    </div>
+    <nav class="flex-1" id="sidebar-nav">
+     <div class="sidebar-item active py-3 px-4 rounded-lg mb-2 flex items-center gap-3" onclick="switchPage('overview')"><span class="text-xl">📊</span> <span>ภาพรวม</span>
+     </div>
+     <div class="sidebar-item py-3 px-4 rounded-lg mb-2 flex items-center gap-3" onclick="switchPage('users')"><span class="text-xl">👥</span> <span>จัดการผู้ใช้</span>
+     </div>
+     <div class="sidebar-item py-3 px-4 rounded-lg mb-2 flex items-center gap-3" onclick="switchPage('novels')"><span class="text-xl">📚</span> <span>จัดการนิยาย</span>
+     </div>
+     <div class="sidebar-item py-3 px-4 rounded-lg mb-2 flex items-center gap-3" onclick="switchPage('categories')"><span class="text-xl">📂</span> <span>หมวดหมู่</span>
+     </div>
+     <div class="sidebar-item py-3 px-4 rounded-lg mb-2 flex items-center gap-3" onclick="switchPage('reports')"><span class="text-xl">📈</span> <span>รายงาน</span>
+     </div>
+     <div class="sidebar-item py-3 px-4 rounded-lg mb-2 flex items-center gap-3" onclick="switchPage('settings')"><span class="text-xl">⚙️</span> <span>ตั้งค่า</span>
+     </div>
+    </nav>
+    <div class="mt-auto pt-6 border-t" id="user-profile">
+     <div class="flex items-center gap-3 mb-4">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center text-2xl" id="user-avatar">
+       👑
+      </div>
+      <div>
+       <p class="font-semibold">แอดมิน</p>
+       <p class="text-xs opacity-70">ผู้ดูแลระบบ</p>
+      </div>
+     </div><button class="action-btn w-full py-2 px-4 rounded-lg text-sm font-semibold" id="logout-btn" onclick="showToast('ออกจากระบบสำเร็จ 👋')"> 🚪 ออกจากระบบ </button>
+    </div>
+   </aside><!-- Main Content -->
+   <main class="flex-1 h-full overflow-y-auto" id="main-content"><!-- Header -->
+    <header class="p-6 border-b flex items-center justify-between" id="header">
+     <div>
+      <h2 class="text-3xl font-bold mb-1" id="dashboard-title" style="font-family: 'Prompt', sans-serif;">แดชบอร์ดแอดมิน</h2>
+      <p class="text-sm opacity-70" id="welcome-message">ยินดีต้อนรับสู่ระบบจัดการ</p>
+     </div>
+     <div class="flex items-center gap-4">
+      <div class="flex items-center gap-2 px-4 py-2 rounded-lg" id="realtime-indicator"><span class="w-3 h-3 rounded-full pulse-dot" id="live-dot"></span> <span class="text-sm font-semibold">สถิติสด</span>
+      </div><button class="action-btn px-4 py-2 rounded-lg text-sm font-semibold" onclick="refreshData()"> 🔄 รีเฟรช </button>
+     </div>
+    </header><!-- Dashboard Content -->
+    <div class="p-6" id="dashboard-content"><!-- Content will be dynamically loaded -->
+    </div>
+   </main>
+  </div><!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 1000;"></div>
+  <script>
+    const defaultConfig = {
+      background_color: "#f8fafc",
+      surface_color: "#ffffff",
+      text_color: "#1e293b",
+      primary_action_color: "#ec4899",
+      secondary_action_color: "#8b5cf6",
+      font_family: "Sarabun",
+      font_size: 16,
+      brand_name: "StoryByte Admin",
+      dashboard_title: "แดชบอร์ดแอดมิน",
+      welcome_message: "ยินดีต้อนรับสู่ระบบจัดการ"
+    };
+
+    let currentPage = 'overview';
+    let realtimeData = {
+      users: 12458,
+      novels: 3847,
+      reads: 45892,
+      revenue: 128450
+    };
+
+    // Simulate realtime data updates
+    setInterval(() => {
+      realtimeData.users += Math.floor(Math.random() * 3);
+      realtimeData.reads += Math.floor(Math.random() * 50);
+      realtimeData.revenue += Math.floor(Math.random() * 500);
+      if (currentPage === 'overview') {
+        updateRealtimeStats();
+      }
+    }, 3000);
+
+    function updateRealtimeStats() {
+      const usersEl = document.getElementById('stat-users');
+      const readsEl = document.getElementById('stat-reads');
+      const revenueEl = document.getElementById('stat-revenue');
+      
+      if (usersEl) usersEl.textContent = realtimeData.users.toLocaleString();
+      if (readsEl) readsEl.textContent = realtimeData.reads.toLocaleString();
+      if (revenueEl) revenueEl.textContent = '฿' + realtimeData.revenue.toLocaleString();
+    }
+
+    function switchPage(page) {
+      currentPage = page;
+      
+      // Update active menu item
+      const menuItems = document.querySelectorAll('.sidebar-item');
+      menuItems.forEach(item => item.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      
+      // Load page content
+      loadPageContent(page);
+      applyStyles();
+    }
+
+    function loadPageContent(page) {
+      const content = document.getElementById('dashboard-content');
+      
+      switch(page) {
+        case 'overview':
+          content.innerHTML = getOverviewContent();
+          break;
+        case 'users':
+          content.innerHTML = getUsersContent();
+          break;
+        case 'novels':
+          content.innerHTML = getNovelsContent();
+          break;
+        case 'categories':
+          content.innerHTML = getCategoriesContent();
+          break;
+        case 'reports':
+          content.innerHTML = getReportsContent();
+          break;
+        case 'settings':
+          content.innerHTML = getSettingsContent();
+          break;
+      }
+      
+      content.classList.add('fade-in');
+    }
+
+    function getOverviewContent() {
+      return `
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="stat-card p-6 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-4xl">👥</div>
+              <div class="text-sm font-semibold px-3 py-1 rounded-full" style="background-color: #ec489920; color: #ec4899;">
+                +12%
+              </div>
+            </div>
+            <h3 class="text-sm opacity-70 mb-2">ผู้ใช้ทั้งหมด</h3>
+            <p class="text-3xl font-bold" id="stat-users">${realtimeData.users.toLocaleString()}</p>
+            <p class="text-xs opacity-60 mt-2">📈 เพิ่มขึ้น 1,458 คน</p>
+          </div>
+          
+          <div class="stat-card p-6 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-4xl">📚</div>
+              <div class="text-sm font-semibold px-3 py-1 rounded-full" style="background-color: #8b5cf620; color: #8b5cf6;">
+                +8%
+              </div>
+            </div>
+            <h3 class="text-sm opacity-70 mb-2">นิยายทั้งหมด</h3>
+            <p class="text-3xl font-bold">${realtimeData.novels.toLocaleString()}</p>
+            <p class="text-xs opacity-60 mt-2">📖 เพิ่มใหม่ 287 เรื่อง</p>
+          </div>
+          
+          <div class="stat-card p-6 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-4xl">📖</div>
+              <div class="text-sm font-semibold px-3 py-1 rounded-full" style="background-color: #f59e0b20; color: #f59e0b;">
+                +23%
+              </div>
+            </div>
+            <h3 class="text-sm opacity-70 mb-2">อ่านวันนี้</h3>
+            <p class="text-3xl font-bold" id="stat-reads">${realtimeData.reads.toLocaleString()}</p>
+            <p class="text-xs opacity-60 mt-2">🔥 สูงสุดในรอบสัปดาห์</p>
+          </div>
+          
+          <div class="stat-card p-6 rounded-2xl shadow-lg">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-4xl">💰</div>
+              <div class="text-sm font-semibold px-3 py-1 rounded-full" style="background-color: #10b98120; color: #10b981;">
+                +15%
+              </div>
+            </div>
+            <h3 class="text-sm opacity-70 mb-2">รายได้</h3>
+            <p class="text-3xl font-bold" id="stat-revenue">฿${realtimeData.revenue.toLocaleString()}</p>
+            <p class="text-xs opacity-60 mt-2">💵 เดือนนี้</p>
+          </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <!-- Line Chart -->
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📊 สถิติการใช้งาน 7 วันย้อนหลัง</h3>
+            <div class="space-y-4">
+              ${[85, 92, 78, 95, 88, 94, 100].map((value, i) => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm">วันที่ ${i + 1}</span>
+                    <span class="text-sm font-semibold">${value}%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="chart-bar h-3 rounded-full" style="width: ${value}%; background: linear-gradient(90deg, #ec4899 0%, #8b5cf6 100%);"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Pie Chart (Text-based) -->
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📂 หมวดหมู่ยอดนิยม</h3>
+            <div class="space-y-4">
+              ${[
+                { name: 'โรแมนติก', percent: 45, color: '#ec4899', icon: '💕' },
+                { name: 'แฟนตาซี', percent: 25, color: '#8b5cf6', icon: '✨' },
+                { name: 'วัยรุ่น', percent: 18, color: '#f59e0b', icon: '🎓' },
+                { name: 'ดราม่า', percent: 12, color: '#10b981', icon: '🎭' }
+              ].map(cat => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm flex items-center gap-2">
+                      <span>${cat.icon}</span>
+                      <span>${cat.name}</span>
+                    </span>
+                    <span class="text-sm font-semibold">${cat.percent}%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="chart-bar h-3 rounded-full" style="width: ${cat.percent}%; background-color: ${cat.color};"></div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="p-6 rounded-2xl shadow-lg">
+          <h3 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">⚡ การดำเนินการด่วน</h3>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('📝 เปิดหน้าอนุมัตินิยาย')">
+              <div class="text-3xl mb-2">✅</div>
+              <div class="text-sm font-semibold">อนุมัตินิยาย</div>
+              <div class="text-xs opacity-60 mt-1">24 รออนุมัติ</div>
+            </button>
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('👥 เปิดหน้าจัดการผู้ใช้')">
+              <div class="text-3xl mb-2">👥</div>
+              <div class="text-sm font-semibold">จัดการผู้ใช้</div>
+              <div class="text-xs opacity-60 mt-1">12,458 คน</div>
+            </button>
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('📊 เปิดรายงาน')">
+              <div class="text-3xl mb-2">📊</div>
+              <div class="text-sm font-semibold">ดูรายงาน</div>
+              <div class="text-xs opacity-60 mt-1">สรุปรายเดือน</div>
+            </button>
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('⚙️ เปิดหน้าตั้งค่า')">
+              <div class="text-3xl mb-2">⚙️</div>
+              <div class="text-sm font-semibold">ตั้งค่า</div>
+              <div class="text-xs opacity-60 mt-1">ระบบ</div>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getUsersContent() {
+      const users = [
+        { id: 1, name: 'สมหญิง รักดี', email: 'somying@email.com', role: 'ลูกค้า', status: 'ออนไลน์', joined: '15/01/2024', reads: 245 },
+        { id: 2, name: 'ดาวใจ สวยงาม', email: 'daowjai@email.com', role: 'นักเขียน', status: 'ออนไลน์', joined: '12/01/2024', reads: 1289 },
+        { id: 3, name: 'จันทร์เพ็ญ ใสสะอาด', email: 'janpen@email.com', role: 'ลูกค้า', status: 'ออฟไลน์', joined: '10/01/2024', reads: 567 },
+        { id: 4, name: 'ดอกไม้ หอมหวน', email: 'dokmai@email.com', role: 'นักเขียน', status: 'ออนไลน์', joined: '08/01/2024', reads: 2456 },
+        { id: 5, name: 'ดาวดิน สดใส', email: 'daowdin@email.com', role: 'ผู้จัดการ', status: 'ออนไลน์', joined: '05/01/2024', reads: 892 }
+      ];
+
+      return `
+        <div class="mb-6 flex items-center justify-between">
+          <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">👥 จัดการผู้ใช้งาน (${users.length.toLocaleString()})</h3>
+          <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showToast('➕ เพิ่มผู้ใช้ใหม่')">
+            ➕ เพิ่มผู้ใช้
+          </button>
+        </div>
+
+        <div class="mb-6 p-6 rounded-2xl shadow-lg">
+          <div class="flex gap-4">
+            <input 
+              type="text" 
+              placeholder="🔍 ค้นหาผู้ใช้..."
+              class="search-input flex-1 px-4 py-3 rounded-xl border-2 focus:outline-none"
+              onkeyup="showToast('🔍 กำลังค้นหา...')"
+            />
+            <select class="search-input px-4 py-3 rounded-xl border-2 focus:outline-none" onchange="showToast('🔽 กรองตามบทบาท')">
+              <option>ทุกบทบาท</option>
+              <option>ลูกค้า</option>
+              <option>นักเขียน</option>
+              <option>ผู้จัดการ</option>
+              <option>แอดมิน</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl shadow-lg overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b-2">
+                <th class="text-left py-4 px-2">ID</th>
+                <th class="text-left py-4 px-2">ชื่อผู้ใช้</th>
+                <th class="text-left py-4 px-2">อีเมล</th>
+                <th class="text-left py-4 px-2">บทบาท</th>
+                <th class="text-left py-4 px-2">สถานะ</th>
+                <th class="text-left py-4 px-2">เข้าร่วม</th>
+                <th class="text-left py-4 px-2">ยอดอ่าน</th>
+                <th class="text-left py-4 px-2">การดำเนินการ</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${users.map(user => `
+                <tr class="table-row border-b">
+                  <td class="py-4 px-2 font-semibold">#${user.id}</td>
+                  <td class="py-4 px-2">
+                    <div class="flex items-center gap-3">
+                      <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                        ${user.role === 'นักเขียน' ? '✍️' : user.role === 'ผู้จัดการ' ? '💼' : '👤'}
+                      </div>
+                      <span class="font-semibold">${user.name}</span>
+                    </div>
+                  </td>
+                  <td class="py-4 px-2 text-sm opacity-70">${user.email}</td>
+                  <td class="py-4 px-2">
+                    <span class="badge" style="background-color: ${user.role === 'ผู้จัดการ' ? '#8b5cf620' : '#ec489920'}; color: ${user.role === 'ผู้จัดการ' ? '#8b5cf6' : '#ec4899'};">
+                      ${user.role}
+                    </span>
+                  </td>
+                  <td class="py-4 px-2">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full ${user.status === 'ออนไลน์' ? 'pulse-dot' : ''}" style="background-color: ${user.status === 'ออนไลน์' ? '#10b981' : '#94a3b8'};"></span>
+                      <span class="text-sm">${user.status}</span>
+                    </div>
+                  </td>
+                  <td class="py-4 px-2 text-sm">${user.joined}</td>
+                  <td class="py-4 px-2 text-sm font-semibold">${user.reads.toLocaleString()}</td>
+                  <td class="py-4 px-2">
+                    <div class="flex gap-2">
+                      <button class="action-btn px-3 py-1 rounded-lg text-xs" onclick="showToast('✏️ แก้ไข ${user.name}')">✏️</button>
+                      <button class="action-btn px-3 py-1 rounded-lg text-xs" onclick="showToast('🚫 ระงับ ${user.name}')">🚫</button>
+                      <button class="action-btn px-3 py-1 rounded-lg text-xs" onclick="showToast('🗑️ ลบ ${user.name}')">🗑️</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function getNovelsContent() {
+      const novels = [
+        { id: 1, title: 'เธอคือแสงในใจฉัน', author: 'ดาวใจ', category: 'โรแมนติก', status: 'เผยแพร่', reads: 125000, rating: 4.8, cover: '🌟' },
+        { id: 2, title: 'รักที่ปลายฝัน', author: 'จันทร์เพ็ญ', category: 'แฟนตาซี', status: 'รออนุมัติ', reads: 89000, rating: 4.6, cover: '🌙' },
+        { id: 3, title: 'ใจเธอใจฉัน', author: 'ดอกไม้', category: 'โรแมนติก', status: 'เผยแพร่', reads: 234000, rating: 4.9, cover: '🌸' },
+        { id: 4, title: 'รักในมหาวิทยาลัย', author: 'ดาวดิน', category: 'วัยรุ่น', status: 'เผยแพร่', reads: 156000, rating: 4.7, cover: '🎓' },
+        { id: 5, title: 'ฝันที่ไกลเกินถึง', author: 'ดาวใจ', category: 'ดราม่า', status: 'ปฏิเสธ', reads: 45000, rating: 4.2, cover: '💭' }
+      ];
+
+      return `
+        <div class="mb-6 flex items-center justify-between">
+          <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">📚 จัดการนิยาย (${novels.length.toLocaleString()})</h3>
+          <div class="flex gap-3">
+            <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showToast('📊 ส่งออกข้อมูล')">
+              📊 ส่งออก
+            </button>
+            <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showToast('➕ เพิ่มนิยายใหม่')">
+              ➕ เพิ่มนิยาย
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-6 p-6 rounded-2xl shadow-lg">
+          <div class="flex gap-4">
+            <input 
+              type="text" 
+              placeholder="🔍 ค้นหานิยาย..."
+              class="search-input flex-1 px-4 py-3 rounded-xl border-2 focus:outline-none"
+              onkeyup="showToast('🔍 กำลังค้นหา...')"
+            />
+            <select class="search-input px-4 py-3 rounded-xl border-2 focus:outline-none" onchange="showToast('🔽 กรองตามหมวดหมู่')">
+              <option>ทุกหมวดหมู่</option>
+              <option>โรแมนติก</option>
+              <option>แฟนตาซี</option>
+              <option>วัยรุ่น</option>
+              <option>ดราม่า</option>
+            </select>
+            <select class="search-input px-4 py-3 rounded-xl border-2 focus:outline-none" onchange="showToast('🔽 กรองตามสถานะ')">
+              <option>ทุกสถานะ</option>
+              <option>เผยแพร่</option>
+              <option>รออนุมัติ</option>
+              <option>ปฏิเสธ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-6">
+          ${novels.map(novel => `
+            <div class="p-6 rounded-2xl shadow-lg table-row">
+              <div class="flex gap-6">
+                <div class="w-32 h-44 rounded-xl flex items-center justify-center text-6xl" style="background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);">
+                  ${novel.cover}
+                </div>
+                <div class="flex-1">
+                  <div class="flex items-start justify-between mb-3">
+                    <div>
+                      <h4 class="text-xl font-bold mb-2">${novel.title}</h4>
+                      <p class="text-sm opacity-70 mb-2">โดย ${novel.author}</p>
+                      <div class="flex items-center gap-3 mb-3">
+                        <span class="badge" style="background-color: #ec489920; color: #ec4899;">${novel.category}</span>
+                        <span class="badge" style="background-color: ${novel.status === 'เผยแพร่' ? '#10b98120' : novel.status === 'รออนุมัติ' ? '#f59e0b20' : '#ef444420'}; color: ${novel.status === 'เผยแพร่' ? '#10b981' : novel.status === 'รออนุมัติ' ? '#f59e0b' : '#ef4444'};">
+                          ${novel.status}
+                        </span>
+                      </div>
+                    </div>
+                    <span class="text-3xl">⭐ ${novel.rating}</span>
+                  </div>
+                  <div class="flex items-center gap-6 mb-4">
+                    <div class="text-sm">
+                      <span class="opacity-70">ยอดอ่าน:</span>
+                      <span class="font-semibold ml-2">${novel.reads.toLocaleString()}</span>
+                    </div>
+                    <div class="text-sm">
+                      <span class="opacity-70">ID:</span>
+                      <span class="font-semibold ml-2">#${novel.id}</span>
+                    </div>
+                  </div>
+                  <div class="flex gap-3">
+                    <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold" onclick="showToast('👁️ ดู ${novel.title}')">
+                      👁️ ดู
+                    </button>
+                    <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold" onclick="showToast('✏️ แก้ไข ${novel.title}')">
+                      ✏️ แก้ไข
+                    </button>
+                    ${novel.status === 'รออนุมัติ' ? `
+                      <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold" onclick="showToast('✅ อนุมัติ ${novel.title}')">
+                        ✅ อนุมัติ
+                      </button>
+                      <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold" onclick="showToast('❌ ปฏิเสธ ${novel.title}')">
+                        ❌ ปฏิเสธ
+                      </button>
+                    ` : ''}
+                    <button class="action-btn px-6 py-2 rounded-lg text-sm font-semibold" onclick="showToast('🗑️ ลบ ${novel.title}')">
+                      🗑️ ลบ
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function getCategoriesContent() {
+      const categories = [
+        { id: 1, name: 'โรแมนติก', icon: '💕', novels: 1245, color: '#ec4899', description: 'เรื่องราวความรักหวานชื่น' },
+        { id: 2, name: 'แฟนตาซี', icon: '✨', novels: 892, color: '#8b5cf6', description: 'โลกแห่งจินตนาการ' },
+        { id: 3, name: 'วัยรุ่น', icon: '🎓', novels: 678, color: '#f59e0b', description: 'ชีวิตวัยเรียน' },
+        { id: 4, name: 'ดราม่า', icon: '🎭', novels: 456, color: '#10b981', description: 'เรื่องราวชีวิตจริง' },
+        { id: 5, name: 'ผจญภัย', icon: '🗺️', novels: 234, color: '#06b6d4', description: 'การผจญภัยสุดตื่นเต้น' },
+        { id: 6, name: 'ลึกลับ', icon: '🔍', novels: 178, color: '#6366f1', description: 'ปริศนาที่ต้องไขคด' }
+      ];
+
+      return `
+        <div class="mb-6 flex items-center justify-between">
+          <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">📂 จัดการหมวดหมู่ (${categories.length})</h3>
+          <button class="action-btn px-6 py-3 rounded-xl font-semibold" onclick="showToast('➕ เพิ่มหมวดหมู่ใหม่')">
+            ➕ เพิ่มหมวดหมู่
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          ${categories.map(cat => `
+            <div class="p-6 rounded-2xl shadow-lg table-row">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-16 h-16 rounded-xl flex items-center justify-center text-3xl" style="background-color: ${cat.color}20;">
+                  ${cat.icon}
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-xl font-bold mb-1">${cat.name}</h4>
+                  <p class="text-sm opacity-70">${cat.novels.toLocaleString()} เรื่อง</p>
+                </div>
+              </div>
+              <p class="text-sm opacity-70 mb-4">${cat.description}</p>
+              <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                <div class="h-2 rounded-full" style="width: ${(cat.novels / 1245 * 100)}%; background-color: ${cat.color};"></div>
+              </div>
+              <div class="flex gap-2">
+                <button class="action-btn flex-1 py-2 rounded-lg text-sm font-semibold" onclick="showToast('✏️ แก้ไข ${cat.name}')">
+                  ✏️ แก้ไข
+                </button>
+                <button class="action-btn flex-1 py-2 rounded-lg text-sm font-semibold" onclick="showToast('🗑️ ลบ ${cat.name}')">
+                  🗑️ ลบ
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <div class="mt-8 p-6 rounded-2xl shadow-lg">
+          <h4 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">📊 สถิติหมวดหมู่</h4>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div class="text-center">
+              <div class="text-3xl mb-2">📚</div>
+              <div class="text-2xl font-bold mb-1">${categories.reduce((sum, cat) => sum + cat.novels, 0).toLocaleString()}</div>
+              <div class="text-sm opacity-70">นิยายทั้งหมด</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-2">📂</div>
+              <div class="text-2xl font-bold mb-1">${categories.length}</div>
+              <div class="text-sm opacity-70">หมวดหมู่ทั้งหมด</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl mb-2">⭐</div>
+              <div class="text-2xl font-bold mb-1">${categories[0].name}</div>
+              <div class="text-sm opacity-70">ยอดนิยมที่สุด</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function getReportsContent() {
+      return `
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">📈 รายงานและวิเคราะห์</h3>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div class="p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-5xl mb-3">📊</div>
+            <div class="text-3xl font-bold mb-2">85.4%</div>
+            <div class="text-sm opacity-70">อัตราการเติบโต</div>
+            <div class="text-xs opacity-60 mt-2 text-green-600">▲ +12.5% จากเดือนที่แล้ว</div>
+          </div>
+          <div class="p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-5xl mb-3">👥</div>
+            <div class="text-3xl font-bold mb-2">8.2K</div>
+            <div class="text-sm opacity-70">ผู้ใช้ใหม่เดือนนี้</div>
+            <div class="text-xs opacity-60 mt-2 text-green-600">▲ +18.3% จากเดือนที่แล้ว</div>
+          </div>
+          <div class="p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-5xl mb-3">⏱️</div>
+            <div class="text-3xl font-bold mb-2">42 นาที</div>
+            <div class="text-sm opacity-70">เวลาอ่านเฉลี่ย</div>
+            <div class="text-xs opacity-60 mt-2 text-green-600">▲ +5.2% จากเดือนที่แล้ว</div>
+          </div>
+        </div>
+
+        <!-- Detailed Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h4 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">📈 การเติบโตของผู้ใช้ (รายเดือน)</h4>
+            <div class="space-y-4">
+              ${[
+                { month: 'มกราคม', value: 8200, percent: 82 },
+                { month: 'กุมภาพันธ์', value: 9500, percent: 95 },
+                { month: 'มีนาคม', value: 11200, percent: 100 },
+                { month: 'เมษายน', value: 10800, percent: 96 },
+                { month: 'พฤษภาคม', value: 12400, percent: 100 }
+              ].map(data => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold">${data.month}</span>
+                    <span class="text-sm font-bold">${data.value.toLocaleString()} คน</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div class="chart-bar h-4 rounded-full flex items-center justify-end pr-2 text-xs text-white font-semibold" style="width: ${data.percent}%; background: linear-gradient(90deg, #ec4899 0%, #8b5cf6 100%);">
+                      ${data.percent}%
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h4 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">💰 รายได้ (รายเดือน)</h4>
+            <div class="space-y-4">
+              ${[
+                { month: 'มกราคม', value: 98500, percent: 78 },
+                { month: 'กุมภาพันธ์', value: 112000, percent: 89 },
+                { month: 'มีนาคม', value: 125600, percent: 100 },
+                { month: 'เมษายน', value: 118900, percent: 94 },
+                { month: 'พฤษภาคม', value: 128450, percent: 100 }
+              ].map(data => `
+                <div>
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold">${data.month}</span>
+                    <span class="text-sm font-bold">฿${data.value.toLocaleString()}</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div class="chart-bar h-4 rounded-full flex items-center justify-end pr-2 text-xs text-white font-semibold" style="width: ${data.percent}%; background: linear-gradient(90deg, #10b981 0%, #06b6d4 100%);">
+                      ${data.percent}%
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="p-6 rounded-2xl shadow-lg mb-8">
+          <h4 class="text-xl font-bold mb-6" style="font-family: 'Prompt', sans-serif;">🏆 นิยายยอดนิยมประจำเดือน</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            ${[
+              { rank: 1, title: 'ใจเธอใจฉัน', reads: 234000, icon: '🥇', color: '#fbbf24' },
+              { rank: 2, title: 'รักในมหาวิทยาลัย', reads: 156000, icon: '🥈', color: '#94a3b8' },
+              { rank: 3, title: 'เธอคือแสงในใจฉัน', reads: 125000, icon: '🥉', color: '#cd7f32' }
+            ].map(novel => `
+              <div class="p-6 rounded-xl text-center" style="background-color: ${novel.color}20;">
+                <div class="text-5xl mb-3">${novel.icon}</div>
+                <div class="text-lg font-bold mb-2">${novel.title}</div>
+                <div class="text-2xl font-bold mb-1" style="color: ${novel.color};">${novel.reads.toLocaleString()}</div>
+                <div class="text-sm opacity-70">ยอดอ่าน</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="p-6 rounded-2xl shadow-lg">
+          <h4 class="text-xl font-bold mb-4" style="font-family: 'Prompt', sans-serif;">📥 ส่งออกรายงาน</h4>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('📄 ส่งออก PDF')">
+              <div class="text-3xl mb-2">📄</div>
+              <div class="text-sm font-semibold">PDF</div>
+            </button>
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('📊 ส่งออก Excel')">
+              <div class="text-3xl mb-2">📊</div>
+              <div class="text-sm font-semibold">Excel</div>
+            </button>
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('📧 ส่งอีเมล')">
+              <div class="text-3xl mb-2">📧</div>
+              <div class="text-sm font-semibold">อีเมล</div>
+            </button>
+            <button class="action-btn p-4 rounded-xl text-center" onclick="showToast('🖨️ พิมพ์รายงาน')">
+              <div class="text-3xl mb-2">🖨️</div>
+              <div class="text-sm font-semibold">พิมพ์</div>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function getSettingsContent() {
+      return `
+        <div class="mb-6">
+          <h3 class="text-2xl font-bold" style="font-family: 'Prompt', sans-serif;">⚙️ ตั้งค่าระบบ</h3>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- General Settings -->
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h4 class="text-lg font-bold mb-4">🔧 ตั้งค่าทั่วไป</h4>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-semibold mb-2">ชื่อเว็บไซต์</label>
+                <input type="text" value="StoryByte" class="search-input w-full px-4 py-3 rounded-xl border-2 focus:outline-none" />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">คำอธิบาย</label>
+                <textarea class="search-input w-full px-4 py-3 rounded-xl border-2 focus:outline-none" rows="3">ทุกเรื่องราวของรัก - แพลตฟอร์มนิยาย GL</textarea>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-2">ภาษา</label>
+                <select class="search-input w-full px-4 py-3 rounded-xl border-2 focus:outline-none">
+                  <option>ไทย</option>
+                  <option>English</option>
+                </select>
+              </div>
+              <button class="action-btn w-full py-3 rounded-xl font-semibold" onclick="showToast('💾 บันทึกการตั้งค่าทั่วไป')">
+                💾 บันทึก
+              </button>
+            </div>
+          </div>
+
+          <!-- Security Settings -->
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h4 class="text-lg font-bold mb-4">🔒 ความปลอดภัย</h4>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-4 rounded-xl" style="background-color: rgba(236, 72, 153, 0.1);">
+                <div>
+                  <div class="font-semibold mb-1">การยืนยันตัวตนสองชั้น</div>
+                  <div class="text-xs opacity-70">เพิ่มความปลอดภัยให้บัญชี</div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" checked onclick="showToast('🔒 เปลี่ยนการตั้งค่า 2FA')">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                </label>
+              </div>
+              <div class="flex items-center justify-between p-4 rounded-xl" style="background-color: rgba(236, 72, 153, 0.1);">
+                <div>
+                  <div class="font-semibold mb-1">แจ้งเตือนการเข้าสู่ระบบ</div>
+                  <div class="text-xs opacity-70">รับการแจ้งเตือนผ่านอีเมล</div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" class="sr-only peer" checked onclick="showToast('📧 เปลี่ยนการตั้งค่าแจ้งเตือน')">
+                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-pink-500"></div>
+                </label>
+              </div>
+              <button class="action-btn w-full py-3 rounded-xl font-semibold" onclick="showToast('🔑 เปลี่ยนรหัสผ่าน')">
+                🔑 เปลี่ยนรหัสผ่าน
+              </button>
+            </div>
+          </div>
+
+          <!-- Notification Settings -->
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h4 class="text-lg font-bold mb-4">🔔 การแจ้งเตือน</h4>
+            <div class="space-y-4">
+              ${[
+                { label: 'นิยายใหม่รออนุมัติ', checked: true },
+                { label: 'ผู้ใช้ใหม่สมัครสมาชิก', checked: true },
+                { label: 'รายงานรายวัน', checked: false },
+                { label: 'รายงานรายสัปดาห์', checked: true }
+              ].map(setting => `
+                <div class="flex items-center justify-between p-4 rounded-xl" style="background-color: rgba(139, 92, 246, 0.1);">
+                  <div class="font-semibold">${setting.label}</div>
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" class="sr-only peer" ${setting.checked ? 'checked' : ''} onclick="showToast('🔔 เปลี่ยนการตั้งค่า ${setting.label}')">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                  </label>
+                </div>
+              `).join('')}
+              <button class="action-btn w-full py-3 rounded-xl font-semibold" onclick="showToast('💾 บันทึกการตั้งค่าการแจ้งเตือน')">
+                💾 บันทึก
+              </button>
+            </div>
+          </div>
+
+          <!-- System Info -->
+          <div class="p-6 rounded-2xl shadow-lg">
+            <h4 class="text-lg font-bold mb-4">ℹ️ ข้อมูลระบบ</h4>
+            <div class="space-y-3">
+              <div class="flex justify-between py-3 border-b">
+                <span class="opacity-70">เวอร์ชัน</span>
+                <span class="font-semibold">v2.5.0</span>
+              </div>
+              <div class="flex justify-between py-3 border-b">
+                <span class="opacity-70">อัพเดทล่าสุด</span>
+                <span class="font-semibold">15 พ.ค. 2567</span>
+              </div>
+              <div class="flex justify-between py-3 border-b">
+                <span class="opacity-70">ดาต้าเบส</span>
+                <span class="font-semibold">MySQL 8.0</span>
+              </div>
+              <div class="flex justify-between py-3 border-b">
+                <span class="opacity-70">เซิร์ฟเวอร์</span>
+                <span class="font-semibold">ออนไลน์ ✅</span>
+              </div>
+            </div>
+            <div class="mt-4 space-y-2">
+              <button class="action-btn w-full py-3 rounded-xl font-semibold" onclick="showToast('🔄 ตรวจสอบอัพเดท')">
+                🔄 ตรวจสอบอัพเดท
+              </button>
+              <button class="action-btn w-full py-3 rounded-xl font-semibold" onclick="showToast('💾 สำรองข้อมูล')">
+                💾 สำรองข้อมูล
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function refreshData() {
+      showToast('🔄 กำลังรีเฟรชข้อมูล...');
+      setTimeout(() => {
+        realtimeData.users += Math.floor(Math.random() * 10);
+        realtimeData.reads += Math.floor(Math.random() * 100);
+        realtimeData.revenue += Math.floor(Math.random() * 1000);
+        if (currentPage === 'overview') {
+          updateRealtimeStats();
+        }
+        showToast('✅ รีเฟรชข้อมูลสำเร็จ!');
+      }, 1000);
+    }
+
+    function showToast(message) {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      
+      const toast = document.createElement('div');
+      toast.textContent = message;
+      toast.style.cssText = `
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        background-color: ${primaryColor};
+        color: white;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        margin-bottom: 10px;
+        animation: slideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      `;
+      
+      const style = document.createElement('style');
+      style.textContent = '@keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }';
+      document.head.appendChild(style);
+      
+      document.getElementById('toast-container').appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.animation = 'slideOut 0.4s ease-in';
+        const styleOut = document.createElement('style');
+        styleOut.textContent = '@keyframes slideOut { to { transform: translateX(400px); opacity: 0; } }';
+        document.head.appendChild(styleOut);
+        
+        setTimeout(() => {
+          toast.remove();
+          style.remove();
+          styleOut.remove();
+        }, 400);
+      }, 3000);
+    }
+
+    function applyStyles() {
+      const config = window.elementSdk ? window.elementSdk.config : defaultConfig;
+      
+      const bgColor = config.background_color || defaultConfig.background_color;
+      const surfaceColor = config.surface_color || defaultConfig.surface_color;
+      const textColor = config.text_color || defaultConfig.text_color;
+      const primaryColor = config.primary_action_color || defaultConfig.primary_action_color;
+      const secondaryColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+      const fontFamily = config.font_family || defaultConfig.font_family;
+      const fontSize = config.font_size || defaultConfig.font_size;
+      
+      document.body.style.fontFamily = `${fontFamily}, sans-serif`;
+      document.body.style.fontSize = `${fontSize}px`;
+      
+      // Main container
+      document.getElementById('main-container').style.backgroundColor = bgColor;
+      
+      // Sidebar
+      document.getElementById('sidebar').style.backgroundColor = surfaceColor;
+      document.getElementById('sidebar').style.color = textColor;
+      document.getElementById('sidebar').style.borderRight = `1px solid ${bgColor}`;
+      
+      // Brand name
+      document.getElementById('brand-name').textContent = config.brand_name || defaultConfig.brand_name;
+      document.getElementById('brand-name').style.fontSize = `${fontSize * 1.5}px`;
+      document.getElementById('brand-name').style.color = textColor;
+      
+      // Main content
+      document.getElementById('main-content').style.backgroundColor = bgColor;
+      document.getElementById('main-content').style.color = textColor;
+      
+      // Header
+      document.getElementById('header').style.backgroundColor = surfaceColor;
+      document.getElementById('header').style.borderColor = bgColor;
+      
+      // Dashboard title and welcome message
+      document.getElementById('dashboard-title').textContent = config.dashboard_title || defaultConfig.dashboard_title;
+      document.getElementById('dashboard-title').style.fontSize = `${fontSize * 1.875}px`;
+      document.getElementById('dashboard-title').style.color = textColor;
+      
+      document.getElementById('welcome-message').textContent = config.welcome_message || defaultConfig.welcome_message;
+      document.getElementById('welcome-message').style.fontSize = `${fontSize * 0.875}px`;
+      
+      // Realtime indicator
+      document.getElementById('realtime-indicator').style.backgroundColor = `${primaryColor}20`;
+      document.getElementById('realtime-indicator').style.color = primaryColor;
+      document.getElementById('live-dot').style.backgroundColor = primaryColor;
+      
+      // User profile
+      document.getElementById('user-profile').style.borderColor = bgColor;
+      document.getElementById('user-avatar').style.backgroundColor = `${primaryColor}20`;
+      
+      // Sidebar items
+      const sidebarItems = document.querySelectorAll('.sidebar-item');
+      sidebarItems.forEach(item => {
+        item.style.color = textColor;
+        if (item.classList.contains('active')) {
+          item.style.backgroundColor = `${primaryColor}20`;
+          item.style.color = primaryColor;
+        } else {
+          item.style.backgroundColor = 'transparent';
+        }
+      });
+      
+      // Stat cards
+      const statCards = document.querySelectorAll('.stat-card');
+      statCards.forEach(card => {
+        card.style.backgroundColor = surfaceColor;
+        card.style.color = textColor;
+      });
+      
+      // Table rows
+      const tableRows = document.querySelectorAll('.table-row');
+      tableRows.forEach(row => {
+        row.style.backgroundColor = surfaceColor;
+        row.style.color = textColor;
+      });
+      
+      // Action buttons
+      const actionBtns = document.querySelectorAll('.action-btn');
+      actionBtns.forEach(btn => {
+        btn.style.backgroundColor = primaryColor;
+        btn.style.color = '#ffffff';
+      });
+      
+      // Search inputs
+      const searchInputs = document.querySelectorAll('.search-input');
+      searchInputs.forEach(input => {
+        input.style.backgroundColor = surfaceColor;
+        input.style.color = textColor;
+        input.style.borderColor = `${primaryColor}40`;
+      });
+      
+      // Content sections
+      const contentSections = document.querySelectorAll('#dashboard-content > div > div');
+      contentSections.forEach(section => {
+        if (section.classList.contains('shadow-lg')) {
+          section.style.backgroundColor = surfaceColor;
+          section.style.color = textColor;
+        }
+      });
+    }
+
+    async function onConfigChange(config) {
+      applyStyles();
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.background_color = value;
+                window.elementSdk.setConfig({ background_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.surface_color = value;
+                window.elementSdk.setConfig({ surface_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.text_color = value;
+                window.elementSdk.setConfig({ text_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.primary_action_color = value;
+                window.elementSdk.setConfig({ primary_action_color: value });
+              }
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              if (window.elementSdk) {
+                window.elementSdk.config.secondary_action_color = value;
+                window.elementSdk.setConfig({ secondary_action_color: value });
+              }
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_family = value;
+              window.elementSdk.setConfig({ font_family: value });
+            }
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            if (window.elementSdk) {
+              window.elementSdk.config.font_size = value;
+              window.elementSdk.setConfig({ font_size: value });
+            }
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["brand_name", config.brand_name || defaultConfig.brand_name],
+        ["dashboard_title", config.dashboard_title || defaultConfig.dashboard_title],
+        ["welcome_message", config.welcome_message || defaultConfig.welcome_message]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Initialize
+    loadPageContent('overview');
+    applyStyles();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a883edb5378895a',t:'MTc2NDgxOTI0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
